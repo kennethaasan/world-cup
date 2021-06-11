@@ -7,7 +7,7 @@ export function Users() {
     <Container>
       <Grid container spacing={2}>
         <Grid item xs={12} component="main">
-          <p>Hello World</p>
+          <p>Siden er under bygging.</p>
         </Grid>
       </Grid>
     </Container>
