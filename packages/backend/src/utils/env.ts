@@ -1,17 +1,15 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-function getOptionalEnviromentVariable(
-  enviromentVariable: string
-): string | undefined {
-  return process.env[enviromentVariable];
+function getOptionalEnvVar(environmentVariable: string): string | undefined {
+  return process.env[environmentVariable];
 }
 
-export function getEnviromentVariable(enviromentVariable: string): string {
-  const envVar = getOptionalEnviromentVariable(enviromentVariable);
+export function getEnvVar(environmentVariable: string): string {
+  const envVar = getOptionalEnvVar(environmentVariable);
 
   if (!envVar || typeof envVar !== 'string') {
-    throw new Error(`enviroment variable ${enviromentVariable} is required`);
+    throw new Error(`environment variable ${environmentVariable} is required`);
   }
 
   return envVar;

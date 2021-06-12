@@ -14,6 +14,8 @@ import { getEnvVar } from './env';
 const DOMAIN_HOSTED_ZONE = getEnvVar('DOMAIN_HOSTED_ZONE');
 const DOMAIN_GRAPHQL_SERVER = getEnvVar('DOMAIN_GRAPHQL_SERVER');
 
+const GOOGLE_API_KEY = getEnvVar('GOOGLE_API_KEY');
+
 export class Stack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -40,6 +42,7 @@ export class Stack extends cdk.Stack {
         memorySize: 1024,
         environment: {
           NODE_ENV: 'production',
+          GOOGLE_API_KEY,
         },
       }
     );

@@ -1,11 +1,7 @@
-import type { Context } from '../context';
-
 export class Model<P> {
-  protected context: Context;
-  public props: P;
+  protected props: P;
 
-  constructor(context: Context, props: P) {
-    this.context = context;
+  constructor(props: P) {
     this.props = props;
   }
 }
