@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { Container } from '../../components/Container';
 import { Loading } from '../../components/Loading';
-import { useGetUsersQuery } from '../../generated/queries';
+import { Question, useGetUsersQuery } from '../../generated/queries';
 import { ErrorPage } from '../ErrorPage';
 
 function getWidth(question: string): number {
@@ -60,11 +60,17 @@ export function Users() {
         headerName: question.question,
         width: getWidth(question.question),
         renderCell: (params: GridCellParams) => {
+          const cellQuestion = params.value as Question;
+
           let color = undefined;
 
           if (question.blueprint) {
-            if (question.blueprint === params.value) {
+            if (question.blueprint === cellQuestion.answer) {
               color = 'success.main';
+            } else if (cellQuestion.points) {
+              color = 'info.main';
+            } else {
+              color = 'secondary.main';
             }
           } else {
             color = 'text.disabled';
@@ -72,7 +78,7 @@ export function Users() {
 
           return (
             <Box component="span" color={color}>
-              {params.value}
+              {cellQuestion.answer}
             </Box>
           );
         },
@@ -80,14 +86,14 @@ export function Users() {
     });
 
     data.getUsers.forEach((user) => {
-      const row: { [key: string]: string | number } = {
+      const row: { [key: string]: string | number | object } = {
         id: user.id,
         name: user.name,
         points: user.points,
       };
 
       user.questions?.forEach((question) => {
-        row[question.question] = question.answer;
+        row[question.question] = question;
       });
 
       rows.push(row);
