@@ -1,7 +1,6 @@
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as certmgr from '@aws-cdk/aws-certificatemanager';
 import * as cloudfront from '@aws-cdk/aws-cloudfront';
-import * as ec2 from '@aws-cdk/aws-ec2';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as route53 from '@aws-cdk/aws-route53';
 import * as route53Targets from '@aws-cdk/aws-route53-targets';
@@ -20,16 +19,6 @@ export class Stack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const natGatewayProvider = ec2.NatProvider.instance({
-      instanceType: new ec2.InstanceType('t3.micro'),
-    });
-
-    const vpc = new ec2.Vpc(this, 'vpc', {
-      maxAzs: 1,
-      natGateways: 1,
-      natGatewayProvider,
-    });
-
     const graphQLServerFunction = new lambda.Function(
       this,
       'graphql-server-function',
@@ -38,7 +27,6 @@ export class Stack extends cdk.Stack {
         runtime: lambda.Runtime.NODEJS_12_X,
         handler: 'build/index.handler',
         timeout: cdk.Duration.seconds(30),
-        vpc,
         memorySize: 1024,
         environment: {
           NODE_ENV: 'production',
