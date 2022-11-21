@@ -49,6 +49,8 @@ export class WorldCupStack extends Stack {
       domainName: DOMAIN_HOSTED_ZONE,
       subjectAlternativeNames: [`*.${DOMAIN_HOSTED_ZONE}`],
       hostedZone,
+      // required for CloudFront
+      region: 'us-east-1',
     });
 
     const graphQLServerApi = new LambdaRestApi(this, 'graphql-server-api', {
