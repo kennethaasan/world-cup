@@ -29,7 +29,12 @@ export class WorldCupStack extends Stack {
       this,
       'graphql-server-function',
       {
-        entry: path.join(__dirname, '../../backend/src/index.ts'),
+        entry: path.join(__dirname, '../../backend/src/server', 'server.ts'),
+        depsLockFilePath: path.join(
+          __dirname,
+          '../../backend',
+          'package-lock.json'
+        ),
         runtime: Runtime.NODEJS_18_X,
         timeout: Duration.seconds(30),
         memorySize: 1024,
