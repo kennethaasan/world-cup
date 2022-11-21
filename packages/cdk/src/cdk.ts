@@ -8,7 +8,7 @@ export function deploy() {
   new WorldCupStack(app, 'WorldCupStack', {
     env: {
       account: getEnvVar('AWS_ACCOUNT_ID'),
-      region: 'eu-north-1',
+      region: getEnvVar('AWS_DEFAULT_REGION'),
     },
   });
 }
