@@ -10,6 +10,6 @@ export interface Context extends ContextWithoutDataSources {
 
 export function getContext(): ContextWithoutDataSources {
   return {
-    test: 'em.aasan.dev',
+    test: 'vm.aasan.dev',
   };
 }

@@ -58,7 +58,7 @@ export class GoogleAPI extends RESTDataSource {
         });
 
         return new User({
-          id: `euro2021:user:${userId + 1}`,
+          id: `world-cup:user:${userId + 1}`,
           name,
           email,
           timestamp,

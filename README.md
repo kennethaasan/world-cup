@@ -1,3 +1,3 @@
-# em.aasan.dev
+# vm.aasan.dev
 
-https://em.aasan.dev
+https://vm.aasan.dev

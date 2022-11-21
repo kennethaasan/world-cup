@@ -9,10 +9,10 @@ jobs:
   pull-request:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
       - run: npm ci
       - run: npm test
       - run: npm run build
@@ -22,5 +22,5 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          DOMAIN_HOSTED_ZONE: em.aasan.dev
-          DOMAIN_GRAPHQL_SERVER: graphql.em.aasan.dev
+          DOMAIN_HOSTED_ZONE: vm.aasan.dev
+          DOMAIN_GRAPHQL_SERVER: graphql.vm.aasan.dev
