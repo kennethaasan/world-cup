@@ -25,7 +25,7 @@ export function Header() {
       <AppBar position="static">
         <Toolbar className={classes.toolbar} disableGutters>
           <Typography variant="h6" className={classes.title}>
-            EM-Konkurranse 2021
+            VM-Tipping 2022
           </Typography>
         </Toolbar>
       </AppBar>
