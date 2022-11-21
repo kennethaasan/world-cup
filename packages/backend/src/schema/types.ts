@@ -1,6 +1,4 @@
-import type {
-  IResolvers as IGraphQLToolsResolvers,
-} from '@graphql-tools/utils';
+import type { IResolvers as IGraphQLToolsResolvers } from '@graphql-tools/utils';
 import { Context } from '../context';
 
 export type IResolvers<
