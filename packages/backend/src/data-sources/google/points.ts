@@ -2,17 +2,22 @@ const POINTS_MATCH_WINNER = 1;
 const POINTS_MATCH_RESULT = 1;
 
 const POINTS: { [question: string]: number } = {
-  'Toppscorer etter gruppespill': 5,
-  'Assistkonge etter gruppespill': 5,
-  'Råtasslag etter gruppespill': 5,
-  'Hvem går videre til 8-delsfinaler?': 2,
+  'Toppscorer etter gruppespill': 4,
+  'Assistkonge etter gruppespill': 4,
+  'Råtasslag etter gruppespill': 4,
+  'Hvem går videre til 8-delsfinaler?': 1,
   Kvartfinalelag: 3,
   Semifinalelag: 4,
-  Finalelag: 5,
+  Finalelag: 6,
   Vinner: 10,
-  'Beste spiller (Golden Ball)': 7,
+  'Beste spiller (Golden Boot)': 7,
   Assistkonge: 7,
-  'Toppscorer (Golden Shoe)': 7,
+  'Toppscorer (Golden Ball)': 7,
+  'Beste land fra Afrika': 4,
+  'Beste land fra Asia/Oseania': 4,
+  'Beste land fra Europa': 6,
+  'Beste land fra Nord og Sentral-Amerika': 3,
+  'Beste land fra Sør-Amerika': 3,
 };
 
 function getWinner(score: string): number {

@@ -31,7 +31,9 @@ export class GoogleAPI extends RESTDataSource {
   public async getUsers(): Promise<User[] | undefined> {
     const googleSheetsData = await this.getGoogleSheetsData();
 
-    const [headers, blueprints, ...users] = googleSheetsData;
+    const [headers, ...users] = googleSheetsData;
+
+    const blueprints = users.pop() || [];
 
     return users
       .map((user, userId) => {
