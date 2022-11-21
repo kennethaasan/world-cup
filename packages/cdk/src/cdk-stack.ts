@@ -1,6 +1,5 @@
 import { App, Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
@@ -25,16 +24,12 @@ export class WorldCupStack extends Stack {
   constructor(scope: App, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const graphQLServerFunction = new NodejsFunction(
+    const graphQLServerFunction = new Function(
       this,
       'graphql-server-function',
       {
-        entry: path.join(__dirname, '../../backend/src/server', 'server.ts'),
-        depsLockFilePath: path.join(
-          __dirname,
-          '../../backend',
-          'package-lock.json'
-        ),
+        code: Code.fromAsset(path.join(__dirname, '../../backend')),
+        handler: 'build/index.handler',
         runtime: Runtime.NODEJS_18_X,
         timeout: Duration.seconds(30),
         memorySize: 1024,
