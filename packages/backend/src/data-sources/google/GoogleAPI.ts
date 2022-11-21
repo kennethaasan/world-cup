@@ -5,8 +5,8 @@ import { getEnvVar } from '../../utils/env';
 import { getPoints } from './points';
 
 const GOOGLE_API_KEY = getEnvVar('GOOGLE_API_KEY');
-const GOOGLE_SHEETS_ID = '1HYFe9rsZTRZzB6y74bkpukuAi-_iytFLLKWvf5vkMsg';
-const GOOGLE_SHEETS_RANGE = 'A1%3AXO28';
+const GOOGLE_SHEETS_ID = '1kw8oY_NNyaQTDWsAR2vHfU_up4Jc2eizugvaWK5zN5s';
+const GOOGLE_SHEETS_RANGE = 'A1:BO16';
 
 export class GoogleAPI extends RESTDataSource {
   baseURL = 'https://sheets.googleapis.com';

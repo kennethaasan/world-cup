@@ -1,6 +1,7 @@
-import { gql, IResolvers } from 'apollo-server-lambda';
+import { gql } from 'apollo-server-lambda';
 import { Context } from '../context';
 import { Question } from '../models';
+import { IResolvers } from './types';
 
 export const typeDefs = gql`
   type Question {

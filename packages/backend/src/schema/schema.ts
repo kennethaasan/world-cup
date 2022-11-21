@@ -1,21 +1,23 @@
-import { gql, IResolvers } from 'apollo-server-lambda';
-import { GraphQLScalarType } from 'graphql';
-import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
-import { Context } from '../context';
+import { gql } from 'apollo-server-lambda';
+import {
+  DateResolver,
+  DateTypeDefinition,
+  DateTimeResolver,
+  DateTimeTypeDefinition,
+} from 'graphql-scalars';
+
 import { Query, resolvers as QueryResolvers } from './Query';
+import { IResolvers } from './types';
 
 export const typeDefs = gql`
-  scalar Date
-  scalar Time
-  scalar DateTime
+  ${DateTypeDefinition}
+  ${DateTimeTypeDefinition}
 
   ${Query}
 `;
 
-export const resolvers: IResolvers<undefined, Context> = {
-  Date: GraphQLDate as GraphQLScalarType,
-  Time: GraphQLTime as GraphQLScalarType,
-  DateTime: GraphQLDateTime as GraphQLScalarType,
-
+export const resolvers: IResolvers<undefined> = {
+  Date: DateResolver,
+  DateTime: DateTimeResolver,
   ...QueryResolvers,
 };

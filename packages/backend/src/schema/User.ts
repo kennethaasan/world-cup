@@ -1,11 +1,11 @@
-import { gql, IResolvers } from 'apollo-server-lambda';
-import { Context } from '../context';
+import { gql } from 'apollo-server-lambda';
 import { User } from '../models';
 import {
   IQuestion,
   resolvers as QuestionResolvers,
   typeDefs as QuestionTypeDefs,
 } from './Question';
+import { IResolvers } from './types';
 
 export const typeDefs = gql`
   ${QuestionTypeDefs}
@@ -20,7 +20,7 @@ export const typeDefs = gql`
 
 export type IUser = User;
 
-export const resolvers: IResolvers<IUser, Context> = {
+export const resolvers: IResolvers<IUser> = {
   ...QuestionResolvers,
 
   User: {

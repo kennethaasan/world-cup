@@ -1,6 +1,7 @@
-import { gql, IResolvers } from 'apollo-server-lambda';
+import { gql } from 'apollo-server-lambda';
 import { Context } from '../context';
 import { GoogleAPI } from '../data-sources/google';
+import { IResolvers } from './types';
 import {
   IUser,
   resolvers as UserResolvers,
