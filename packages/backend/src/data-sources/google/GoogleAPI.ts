@@ -5,8 +5,8 @@ import { getEnvVar } from '../../utils/env';
 import { getPoints } from './points';
 
 const GOOGLE_API_KEY = getEnvVar('GOOGLE_API_KEY');
-const GOOGLE_SHEETS_ID = '1HYFe9rsZTRZzB6y74bkpukuAi-_iytFLLKWvf5vkMsg';
-const GOOGLE_SHEETS_RANGE = 'A1%3AXO28';
+const GOOGLE_SHEETS_ID = '1kw8oY_NNyaQTDWsAR2vHfU_up4Jc2eizugvaWK5zN5s';
+const GOOGLE_SHEETS_RANGE = 'A1:BO16';
 
 export class GoogleAPI extends RESTDataSource {
   baseURL = 'https://sheets.googleapis.com';
@@ -31,7 +31,9 @@ export class GoogleAPI extends RESTDataSource {
   public async getUsers(): Promise<User[] | undefined> {
     const googleSheetsData = await this.getGoogleSheetsData();
 
-    const [headers, blueprints, ...users] = googleSheetsData;
+    const [headers, ...users] = googleSheetsData;
+
+    const blueprints = users.pop() || [];
 
     return users
       .map((user, userId) => {
@@ -58,7 +60,7 @@ export class GoogleAPI extends RESTDataSource {
         });
 
         return new User({
-          id: `euro2021:user:${userId + 1}`,
+          id: `world-cup:user:${userId + 1}`,
           name,
           email,
           timestamp,

@@ -1,14 +1,17 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -16,25 +19,14 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string;
-  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: string;
-  /** A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  Time: string;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
 };
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
 
 export type Query = {
   __typename?: 'Query';
-  getUsers?: Maybe<Array<User>>;
   getUser?: Maybe<User>;
+  getUsers?: Maybe<Array<User>>;
 };
 
 export type QueryGetUserArgs = {
@@ -43,10 +35,10 @@ export type QueryGetUserArgs = {
 
 export type Question = {
   __typename?: 'Question';
-  question: Scalars['String'];
   answer: Scalars['String'];
   blueprint?: Maybe<Scalars['String']>;
   points?: Maybe<Scalars['Int']>;
+  question: Scalars['String'];
 };
 
 export type User = {
@@ -61,38 +53,40 @@ export type GetUserQueryVariables = Exact<{
   userId: Scalars['ID'];
 }>;
 
-export type GetUserQuery = { __typename?: 'Query' } & {
-  getUser?: Maybe<
-    { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'points'> & {
-        questions?: Maybe<
-          Array<
-            { __typename?: 'Question' } & Pick<
-              Question,
-              'question' | 'answer' | 'blueprint' | 'points'
-            >
-          >
-        >;
-      }
-  >;
+export type GetUserQuery = {
+  __typename?: 'Query';
+  getUser?: {
+    __typename?: 'User';
+    id: string;
+    name: string;
+    points: number;
+    questions?: Array<{
+      __typename?: 'Question';
+      question: string;
+      answer: string;
+      blueprint?: string | null;
+      points?: number | null;
+    }> | null;
+  } | null;
 };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetUsersQuery = { __typename?: 'Query' } & {
-  getUsers?: Maybe<
-    Array<
-      { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'points'> & {
-          questions?: Maybe<
-            Array<
-              { __typename?: 'Question' } & Pick<
-                Question,
-                'question' | 'answer' | 'blueprint' | 'points'
-              >
-            >
-          >;
-        }
-    >
-  >;
+export type GetUsersQuery = {
+  __typename?: 'Query';
+  getUsers?: Array<{
+    __typename?: 'User';
+    id: string;
+    name: string;
+    points: number;
+    questions?: Array<{
+      __typename?: 'Question';
+      question: string;
+      answer: string;
+      blueprint?: string | null;
+      points?: number | null;
+    }> | null;
+  }> | null;
 };
 
 export const GetUserDocument = gql`
