@@ -8,7 +8,7 @@ import {
 import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 import path from 'path';
 import { getEnvVar } from './env';
-import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { ApiGateway, CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import {
   CloudFrontWebDistribution,
