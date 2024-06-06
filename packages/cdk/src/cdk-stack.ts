@@ -77,10 +77,15 @@ export class WorldCupStack extends Stack {
     const frontendBucket = new Bucket(this, 'frontend-bucket', {
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
+      publicReadAccess: true,
+      blockPublicAccess: {
+        blockPublicAcls: false,
+        blockPublicPolicy: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      },
       removalPolicy: RemovalPolicy.DESTROY,
     });
-
-    frontendBucket.grantPublicAccess();
 
     const frontendDistribution = new CloudFrontWebDistribution(
       this,
