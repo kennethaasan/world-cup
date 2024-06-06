@@ -25,7 +25,7 @@ export function Header() {
       <AppBar position="static">
         <Toolbar className={classes.toolbar} disableGutters>
           <Typography variant="h6" className={classes.title}>
-            VM-Tipping 2022
+            Meisterskaps-Tipping {new Date().getFullYear()}
           </Typography>
         </Toolbar>
       </AppBar>

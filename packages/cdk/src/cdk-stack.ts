@@ -1,7 +1,10 @@
 import { App, Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
-import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
+import {
+  Certificate,
+  CertificateValidation,
+} from 'aws-cdk-lib/aws-certificatemanager';
 import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 import path from 'path';
 import { getEnvVar } from './env';
@@ -45,10 +48,10 @@ export class WorldCupStack extends Stack {
       privateZone: false,
     });
 
-    const certificate = new DnsValidatedCertificate(this, 'certificate', {
+    const certificate = new Certificate(this, 'certificate', {
       domainName: DOMAIN_HOSTED_ZONE,
       subjectAlternativeNames: [`*.${DOMAIN_HOSTED_ZONE}`],
-      hostedZone,
+      validation: CertificateValidation.fromDns(hostedZone),
     });
 
     const graphQLServerApi = new LambdaRestApi(this, 'graphql-server-api', {
@@ -74,9 +77,10 @@ export class WorldCupStack extends Stack {
     const frontendBucket = new Bucket(this, 'frontend-bucket', {
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
-      publicReadAccess: true,
       removalPolicy: RemovalPolicy.DESTROY,
     });
+
+    frontendBucket.grantPublicAccess();
 
     const frontendDistribution = new CloudFrontWebDistribution(
       this,

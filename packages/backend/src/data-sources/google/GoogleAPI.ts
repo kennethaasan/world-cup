@@ -5,8 +5,8 @@ import { getEnvVar } from '../../utils/env';
 import { getPoints } from './points';
 
 const GOOGLE_API_KEY = getEnvVar('GOOGLE_API_KEY');
-const GOOGLE_SHEETS_ID = '1kw8oY_NNyaQTDWsAR2vHfU_up4Jc2eizugvaWK5zN5s';
-const GOOGLE_SHEETS_RANGE = 'A1:BO16';
+const GOOGLE_SHEETS_ID = '1e7SwesvqHvh0TGgVinoTVUr4ymoK6i8vmPmniQXK0AM';
+const GOOGLE_SHEETS_RANGE = 'A1:AY20';
 
 export class GoogleAPI extends RESTDataSource {
   baseURL = 'https://sheets.googleapis.com';
@@ -33,7 +33,9 @@ export class GoogleAPI extends RESTDataSource {
 
     const [headers, ...users] = googleSheetsData;
 
-    const blueprints = users.pop() || [];
+    // TODO: uncomment when blueprint is ready
+    // const blueprints = users.pop() || [];
+    const blueprints: string[] = [];
 
     return users
       .map((user, userId) => {
