@@ -55,7 +55,9 @@ export class GoogleAPI extends RESTDataSource {
 
           return new Question({
             question,
-            answer,
+            // TODO: uncomment when tournament starts
+            // answer,
+            answer: '-',
             blueprint: blueprint === '' ? undefined : blueprint,
             points: questionPoints,
           });
