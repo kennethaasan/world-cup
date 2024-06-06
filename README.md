@@ -1,3 +1,3 @@
-# vm.aasan.dev
+# tipping.aasan.dev
 
-https://vm.aasan.dev
+https://tipping.aasan.dev
