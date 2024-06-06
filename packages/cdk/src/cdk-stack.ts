@@ -8,7 +8,7 @@ import {
 import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 import path from 'path';
 import { getEnvVar } from './env';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { ApiGateway, CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import {
   CloudFrontWebDistribution,
@@ -77,9 +77,10 @@ export class WorldCupStack extends Stack {
     const frontendBucket = new Bucket(this, 'frontend-bucket', {
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
-      publicReadAccess: true,
       removalPolicy: RemovalPolicy.DESTROY,
     });
+
+    frontendBucket.grantPublicAccess();
 
     const frontendDistribution = new CloudFrontWebDistribution(
       this,
