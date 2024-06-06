@@ -2,22 +2,18 @@ const POINTS_MATCH_WINNER = 1;
 const POINTS_MATCH_RESULT = 1;
 
 const POINTS: { [question: string]: number } = {
-  'Toppscorer etter gruppespill': 4,
-  'Assistkonge etter gruppespill': 4,
-  'Råtasslag etter gruppespill': 4,
-  'Hvem går videre til 8-delsfinaler?': 1,
+  'Toppscorer etter gruppespill': 3,
+  'Assistkonge etter gruppespill': 3,
+  'Råtasslag etter gruppespill': 3,
+  'Hvem går videre til 8-delsfinaler? Alle lag topp to og 4 av 6 lag på tredjeplass går videre til 8-delsfinaler.': 1,
   Kvartfinalelag: 3,
   Semifinalelag: 4,
   Finalelag: 6,
   Vinner: 10,
-  'Beste spiller (Golden Boot)': 7,
-  Assistkonge: 7,
-  'Toppscorer (Golden Ball)': 7,
-  'Beste land fra Afrika': 4,
-  'Beste land fra Asia/Oseania': 4,
-  'Beste land fra Europa': 6,
-  'Beste land fra Nord og Sentral-Amerika': 3,
-  'Beste land fra Sør-Amerika': 3,
+  'Toppscorer (Golden Ball)': 5,
+  Assistkonge: 5,
+  'Beste spiller (UEFA Player of the Tournament)': 5,
+  'Beste unge spiller (UEFA Young Player of the Tournament). Må være under 21 år ved starten av kalenderåret 2024.': 2,
 };
 
 function getWinner(score: string): number {
