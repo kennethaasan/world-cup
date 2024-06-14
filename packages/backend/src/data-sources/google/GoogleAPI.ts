@@ -33,9 +33,7 @@ export class GoogleAPI extends RESTDataSource {
 
     const [headers, ...users] = googleSheetsData;
 
-    // TODO: uncomment when blueprint is ready
-    // const blueprints = users.pop() || [];
-    const blueprints: string[] = [];
+    const blueprints = users.pop() || [];
 
     return users
       .map((user, userId) => {
@@ -55,9 +53,7 @@ export class GoogleAPI extends RESTDataSource {
 
           return new Question({
             question,
-            // TODO: uncomment when tournament starts
-            // answer,
-            answer: '-',
+            answer,
             blueprint: blueprint === '' ? undefined : blueprint,
             points: questionPoints,
           });
