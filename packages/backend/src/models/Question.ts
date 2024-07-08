@@ -5,6 +5,7 @@ export class Question extends Model<{
   answer: string;
   blueprint: string | undefined;
   points: number | undefined;
+  maxPoints: number | undefined;
 }> {
   public get question() {
     return this.props.question;
@@ -20,5 +21,9 @@ export class Question extends Model<{
 
   public get points() {
     return this.props.points;
+  }
+
+  public get maxPoints() {
+    return this.props.maxPoints;
   }
 }

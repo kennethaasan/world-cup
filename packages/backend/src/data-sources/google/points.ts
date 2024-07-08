@@ -33,7 +33,12 @@ export function getPoints(
   question: string,
   answer: string,
   blueprint: string | undefined
-): number | undefined {
+):
+  | {
+      points: number;
+      maxPoints: number;
+    }
+  | undefined {
   if (!blueprint) {
     return undefined;
   }
@@ -50,7 +55,10 @@ export function getPoints(
       }
     });
 
-    return points;
+    return {
+      points,
+      maxPoints: POINTS[question] * blueprints.size,
+    };
   }
 
   if (answer === blueprint) {
@@ -64,5 +72,8 @@ export function getPoints(
     points = points + POINTS_MATCH_WINNER;
   }
 
-  return points;
+  return {
+    points,
+    maxPoints: POINTS_MATCH_RESULT + POINTS_MATCH_WINNER,
+  };
 }

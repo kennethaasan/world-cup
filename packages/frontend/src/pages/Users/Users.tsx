@@ -13,7 +13,7 @@ import { ErrorPage } from '../ErrorPage';
 
 function getWidth(question: string): number {
   switch (question) {
-    case 'Hvem går videre til 8-delsfinaler?':
+    case 'Hvem går videre til 8-delsfinaler? Alle lag topp to og 4 av 6 lag på tredjeplass går videre til 8-delsfinaler.':
       return 850;
     case 'Kvartfinalelag':
       return 450;
@@ -65,7 +65,7 @@ export function Users() {
           let color = undefined;
 
           if (question.blueprint) {
-            if (question.blueprint === cellQuestion.answer) {
+            if (cellQuestion.points === cellQuestion.max_points) {
               color = 'success.main';
             } else if (cellQuestion.points) {
               color = 'info.main';

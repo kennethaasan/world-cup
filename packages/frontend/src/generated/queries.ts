@@ -37,6 +37,7 @@ export type Question = {
   __typename?: 'Question';
   answer: Scalars['String'];
   blueprint?: Maybe<Scalars['String']>;
+  max_points?: Maybe<Scalars['Int']>;
   points?: Maybe<Scalars['Int']>;
   question: Scalars['String'];
 };
@@ -66,6 +67,7 @@ export type GetUserQuery = {
       answer: string;
       blueprint?: string | null;
       points?: number | null;
+      max_points?: number | null;
     }> | null;
   } | null;
 };
@@ -85,6 +87,7 @@ export type GetUsersQuery = {
       answer: string;
       blueprint?: string | null;
       points?: number | null;
+      max_points?: number | null;
     }> | null;
   }> | null;
 };
@@ -100,6 +103,7 @@ export const GetUserDocument = gql`
         answer
         blueprint
         points
+        max_points
       }
     }
   }
@@ -156,6 +160,7 @@ export const GetUsersDocument = gql`
         answer
         blueprint
         points
+        max_points
       }
     }
   }

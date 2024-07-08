@@ -9,6 +9,7 @@ export const typeDefs = gql`
     answer: String!
     blueprint: String
     points: Int
+    max_points: Int
   }
 `;
 
@@ -27,6 +28,9 @@ export const resolvers: IResolvers<IQuestion, Context> = {
     },
     points: (question): number | undefined => {
       return question.points;
+    },
+    max_points: (question): number | undefined => {
+      return question.maxPoints;
     },
   },
 };

@@ -11,6 +11,7 @@ export const GET_OVERVIEW = gql`
         answer
         blueprint
         points
+        max_points
       }
     }
   }

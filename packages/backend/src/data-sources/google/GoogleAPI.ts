@@ -48,14 +48,15 @@ export class GoogleAPI extends RESTDataSource {
           const questionPoints = getPoints(question, answer, blueprint);
 
           if (questionPoints) {
-            points = points + questionPoints;
+            points = points + questionPoints.points;
           }
 
           return new Question({
             question,
             answer,
             blueprint: blueprint === '' ? undefined : blueprint,
-            points: questionPoints,
+            points: questionPoints?.points,
+            maxPoints: questionPoints?.maxPoints,
           });
         });
 
