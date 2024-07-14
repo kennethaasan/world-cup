@@ -10,7 +10,7 @@ const POINTS: { [question: string]: number } = {
   Semifinalelag: 4,
   Finalelag: 6,
   Vinner: 10,
-  'Toppscorer (Golden Ball)': 5,
+  'Toppscorer (Golden Boot)': 5,
   Assistkonge: 5,
   'Beste spiller (UEFA Player of the Tournament)': 5,
   'Beste unge spiller (UEFA Young Player of the Tournament). Må være under 21 år ved starten av kalenderåret 2024.': 2,
