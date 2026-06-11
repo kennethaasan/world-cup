@@ -162,7 +162,8 @@ export function getPoints(
   let points = 0;
 
   if (
-    answerScore?.home === blueprintScore.home &&
+    answerScore &&
+    answerScore.home === blueprintScore.home &&
     answerScore.away === blueprintScore.away
   ) {
     points = POINTS_MATCH_RESULT;

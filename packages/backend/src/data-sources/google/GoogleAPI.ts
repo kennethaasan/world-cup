@@ -23,7 +23,14 @@ const GOOGLE_SHEETS_ID =
 const GOOGLE_SHEETS_RANGE =
   getOptionalEnvVar('GOOGLE_SHEETS_RANGE') || "'Form Responses 1'!A1:CS125";
 
-let cachedToken:
+let cachedServiceAccountToken:
+  | {
+      accessToken: string;
+      expiresAt: number;
+    }
+  | undefined;
+
+let cachedOAuthToken:
   | {
       accessToken: string;
       expiresAt: number;
@@ -49,8 +56,11 @@ async function getServiceAccountAccessToken(): Promise<string | undefined> {
 
   const now = Math.floor(Date.now() / 1000);
 
-  if (cachedToken && cachedToken.expiresAt > now + 60) {
-    return cachedToken.accessToken;
+  if (
+    cachedServiceAccountToken &&
+    cachedServiceAccountToken.expiresAt > now + 60
+  ) {
+    return cachedServiceAccountToken.accessToken;
   }
 
   const header = {
@@ -96,12 +106,12 @@ async function getServiceAccountAccessToken(): Promise<string | undefined> {
     expires_in: number;
   };
 
-  cachedToken = {
+  cachedServiceAccountToken = {
     accessToken: token.access_token,
     expiresAt: now + token.expires_in,
   };
 
-  return cachedToken.accessToken;
+  return cachedServiceAccountToken.accessToken;
 }
 
 async function getOAuthAccessToken(): Promise<string | undefined> {
@@ -115,8 +125,8 @@ async function getOAuthAccessToken(): Promise<string | undefined> {
 
   const now = Math.floor(Date.now() / 1000);
 
-  if (cachedToken && cachedToken.expiresAt > now + 60) {
-    return cachedToken.accessToken;
+  if (cachedOAuthToken && cachedOAuthToken.expiresAt > now + 60) {
+    return cachedOAuthToken.accessToken;
   }
 
   const response = await fetch('https://oauth2.googleapis.com/token', {
@@ -141,12 +151,12 @@ async function getOAuthAccessToken(): Promise<string | undefined> {
     expires_in: number;
   };
 
-  cachedToken = {
+  cachedOAuthToken = {
     accessToken: token.access_token,
     expiresAt: now + token.expires_in,
   };
 
-  return cachedToken.accessToken;
+  return cachedOAuthToken.accessToken;
 }
 
 async function getGoogleAccessToken(): Promise<string | undefined> {
