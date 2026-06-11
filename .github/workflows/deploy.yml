@@ -21,6 +21,13 @@ jobs:
       DOMAIN_GRAPHQL_SERVER: graphql.tipping.aasan.dev
       DOMAIN_HOSTED_ZONE: tipping.aasan.dev
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+      GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+      GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+      GOOGLE_SHEETS_ID: 1hsMSMhqu4UTrPlToYrfxjFrIXmT2JaiVzzjXeUvbgpw
+      GOOGLE_SHEETS_RANGE: "'Form Responses 1'!A1:CS125"
       VITE_GRAPHQL_SERVER_URI: https://graphql.tipping.aasan.dev
     steps:
       - uses: actions/checkout@v6.0.3

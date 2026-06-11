@@ -8,7 +8,7 @@ import {
 } from 'aws-cdk-lib/aws-certificatemanager';
 import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 import path from 'path';
-import { getEnvVar } from './env';
+import { getEnvVar, getOptionalEnvVar } from './env';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { ApiGateway, CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import {
@@ -23,7 +23,35 @@ const DOMAIN_HOSTED_ZONE = getEnvVar('DOMAIN_HOSTED_ZONE');
 const DOMAIN_GRAPHQL_SERVER = getEnvVar('DOMAIN_GRAPHQL_SERVER');
 const CLOUDFRONT_CERTIFICATE_ARN = getEnvVar('CLOUDFRONT_CERTIFICATE_ARN');
 
-const GOOGLE_API_KEY = getEnvVar('GOOGLE_API_KEY');
+const GOOGLE_API_KEY = getOptionalEnvVar('GOOGLE_API_KEY');
+const GOOGLE_SERVICE_ACCOUNT_EMAIL = getOptionalEnvVar(
+  'GOOGLE_SERVICE_ACCOUNT_EMAIL'
+);
+const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = getOptionalEnvVar(
+  'GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY'
+);
+const GOOGLE_OAUTH_CLIENT_ID = getOptionalEnvVar('GOOGLE_OAUTH_CLIENT_ID');
+const GOOGLE_OAUTH_CLIENT_SECRET = getOptionalEnvVar(
+  'GOOGLE_OAUTH_CLIENT_SECRET'
+);
+const GOOGLE_OAUTH_REFRESH_TOKEN = getOptionalEnvVar(
+  'GOOGLE_OAUTH_REFRESH_TOKEN'
+);
+const GOOGLE_SHEETS_ID = getOptionalEnvVar('GOOGLE_SHEETS_ID');
+const GOOGLE_SHEETS_RANGE = getOptionalEnvVar('GOOGLE_SHEETS_RANGE');
+
+const googleEnvironment = Object.fromEntries(
+  Object.entries({
+    GOOGLE_API_KEY,
+    GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+    GOOGLE_OAUTH_CLIENT_ID,
+    GOOGLE_OAUTH_CLIENT_SECRET,
+    GOOGLE_OAUTH_REFRESH_TOKEN,
+    GOOGLE_SHEETS_ID,
+    GOOGLE_SHEETS_RANGE,
+  }).filter((entry): entry is [string, string] => Boolean(entry[1]))
+);
 
 export class WorldCupStack extends Stack {
   constructor(scope: App, id: string, props?: StackProps) {
@@ -40,7 +68,7 @@ export class WorldCupStack extends Stack {
         memorySize: 1024,
         environment: {
           NODE_ENV: 'production',
-          GOOGLE_API_KEY,
+          ...googleEnvironment,
         },
       }
     );

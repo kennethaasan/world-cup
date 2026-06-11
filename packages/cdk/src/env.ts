@@ -10,3 +10,7 @@ export function getEnvVar(key: string): string {
 
   return envVar;
 }
+
+export function getOptionalEnvVar(key: string): string | undefined {
+  return process.env[key];
+}
