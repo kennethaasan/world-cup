@@ -9,6 +9,7 @@ export default tseslint.config(
     ignores: [
       '**/build/**',
       '**/coverage/**',
+      '**/cdk.out/**',
       '**/dist/**',
       '**/node_modules/**',
       'packages/frontend/src/generated/**',
