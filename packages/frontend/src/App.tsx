@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
@@ -10,7 +10,7 @@ import { theme } from './theme';
 import { getEnvVar } from './utils/env';
 
 const client = new ApolloClient({
-  uri: getEnvVar('VITE_GRAPHQL_SERVER_URI'),
+  link: new HttpLink({ uri: getEnvVar('VITE_GRAPHQL_SERVER_URI') }),
   cache: new InMemoryCache(),
 });
 

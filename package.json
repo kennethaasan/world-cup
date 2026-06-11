@@ -15,7 +15,8 @@
     "start": "npm run start --workspace world-cup-backend & npm run start --workspace world-cup-frontend & npm run start --workspace world-cup-cdk & wait",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "pretest": "npm run prettier:check && npm run eslint",
+    "pretest": "npm run prettier:check && npm run eslint && npm run typecheck",
+    "typecheck": "tsgo -p packages/backend/tsconfig.json --noEmit && tsgo -p packages/cdk/tsconfig.json --noEmit && tsgo -p packages/frontend/tsconfig.json --noEmit",
     "prettier:check": "prettier --check \"**/*.{json,js,mjs,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
     "prettier:fix": "prettier --write \"**/*.{json,js,mjs,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
     "eslint": "eslint . --max-warnings=0",
@@ -33,6 +34,7 @@
   "homepage": "https://github.com/kennethaasan/world-cup#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@typescript/native-preview": "7.0.0-dev.20260611.2",
     "@types/node": "^24.13.2",
     "esbuild": "^0.28.0",
     "eslint": "^10.4.1",

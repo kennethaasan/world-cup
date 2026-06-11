@@ -6,7 +6,7 @@ import { Container } from '../components/Container';
 export function ErrorPage({ error }: { error: Error }) {
   return (
     <Container>
-      <Stack alignItems="center">
+      <Stack sx={{ alignItems: 'center' }}>
         <Typography color="secondary">Error</Typography>
         <Typography color="secondary">{error.message}</Typography>
         <Typography color="secondary">Blame Kenneth!</Typography>
