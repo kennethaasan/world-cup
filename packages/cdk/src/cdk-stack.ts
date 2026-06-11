@@ -20,6 +20,7 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 
 const DOMAIN_HOSTED_ZONE = getEnvVar('DOMAIN_HOSTED_ZONE');
 const DOMAIN_GRAPHQL_SERVER = getEnvVar('DOMAIN_GRAPHQL_SERVER');
+const CLOUDFRONT_CERTIFICATE_ARN = getEnvVar('CLOUDFRONT_CERTIFICATE_ARN');
 
 const GOOGLE_API_KEY = getEnvVar('GOOGLE_API_KEY');
 
@@ -48,17 +49,22 @@ export class WorldCupStack extends Stack {
       privateZone: false,
     });
 
-    const certificate = new Certificate(this, 'certificate', {
-      domainName: DOMAIN_HOSTED_ZONE,
-      subjectAlternativeNames: [`*.${DOMAIN_HOSTED_ZONE}`],
+    const apiCertificate = new Certificate(this, 'api-certificate', {
+      domainName: DOMAIN_GRAPHQL_SERVER,
       validation: CertificateValidation.fromDns(hostedZone),
     });
+
+    const cloudFrontCertificate = Certificate.fromCertificateArn(
+      this,
+      'cloudfront-certificate',
+      CLOUDFRONT_CERTIFICATE_ARN
+    );
 
     const graphQLServerApi = new LambdaRestApi(this, 'graphql-server-api', {
       handler: graphQLServerFunction,
       domainName: {
         domainName: DOMAIN_GRAPHQL_SERVER,
-        certificate,
+        certificate: apiCertificate,
       },
       defaultCorsPreflightOptions: {
         allowOrigins: [`https://${DOMAIN_HOSTED_ZONE}`],
@@ -103,11 +109,14 @@ export class WorldCupStack extends Stack {
             ],
           },
         ],
-        viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
-          aliases: [DOMAIN_HOSTED_ZONE],
-          securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2021,
-          sslMethod: SSLMethod.SNI,
-        }),
+        viewerCertificate: ViewerCertificate.fromAcmCertificate(
+          cloudFrontCertificate,
+          {
+            aliases: [DOMAIN_HOSTED_ZONE],
+            securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2021,
+            sslMethod: SSLMethod.SNI,
+          }
+        ),
       }
     );
 
