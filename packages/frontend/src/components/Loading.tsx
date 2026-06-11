@@ -6,7 +6,7 @@ import React from 'react';
 export function Loading() {
   return (
     <Paper sx={{ mb: 1 }}>
-      <Stack alignItems="center" sx={{ py: 1 }}>
+      <Stack sx={{ alignItems: 'center', py: 1 }}>
         <CircularProgress />
       </Stack>
     </Paper>
