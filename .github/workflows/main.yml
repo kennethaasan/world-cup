@@ -9,15 +9,16 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6.0.3
+      - uses: actions/setup-node@v6.4.0
         with:
-          node-version: 18
+          node-version: 24
+          cache: npm
       - run: npm ci
       - run: npm test
       - run: npm run build
         env:
-          REACT_APP_GRAPHQL_SERVER_URI: https://graphql.tipping.aasan.dev
+          VITE_GRAPHQL_SERVER_URI: https://graphql.tipping.aasan.dev
       - run: npm run deploy
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}

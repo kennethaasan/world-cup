@@ -3,24 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=development DEBUG=google ts-node-dev --transpile-only ./src/server/server-local.ts",
-    "build": "../../node_modules/.bin/tsc"
+    "start": "NODE_ENV=development DEBUG=google tsx watch ./src/server/server-local.ts",
+    "build": "tsc"
   },
   "dependencies": {
-    "@graphql-tools/utils": "^9.1.1",
-    "apollo-datasource-rest": "^3.7.0",
-    "apollo-server": "^3.11.1",
-    "apollo-server-lambda": "^3.11.1",
-    "apollo-server-plugin-response-cache": "^3.8.1",
-    "cheerio": "^1.0.0-rc.3",
-    "dataloader": "^2.1.0",
-    "dotenv": "^16.0.3",
-    "graphql": "^16.6.0",
-    "graphql-scalars": "^1.20.1"
+    "@apollo/datasource-rest": "^6.4.1",
+    "@apollo/server": "^5.5.1",
+    "@apollo/server-plugin-response-cache": "^5.0.0",
+    "@as-integrations/aws-lambda": "^4.1.0",
+    "@graphql-tools/schema": "^10.0.33",
+    "@graphql-tools/utils": "^11.1.0",
+    "dotenv": "^17.4.2",
+    "graphql": "^16.14.2",
+    "graphql-scalars": "^1.25.0",
+    "graphql-tag": "^2.12.6"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.29",
-    "@types/graphql-iso-date": "^3.4.0",
-    "ts-node-dev": "^2.0.0"
+    "tsx": "^4.22.4"
   }
 }

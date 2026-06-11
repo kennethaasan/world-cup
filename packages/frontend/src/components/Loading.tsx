@@ -1,24 +1,14 @@
-import { CircularProgress, Grid, makeStyles, Paper } from '@material-ui/core';
+import CircularProgress from '@mui/material/CircularProgress';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginBottom: theme.spacing(),
-  },
-  loading: {
-    marginTop: theme.spacing(),
-    marginBottom: theme.spacing(),
-  },
-}));
-
 export function Loading() {
-  const classes = useStyles();
-
   return (
-    <Paper className={classes.root}>
-      <Grid container justify="center">
-        <CircularProgress className={classes.loading} />
-      </Grid>
+    <Paper sx={{ mb: 1 }}>
+      <Stack alignItems="center" sx={{ py: 1 }}>
+        <CircularProgress />
+      </Stack>
     </Paper>
   );
 }

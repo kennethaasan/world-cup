@@ -1,19 +1,26 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Header } from './components/Header';
 import { Users } from './pages/Users';
 import { theme } from './theme';
 import { getEnvVar } from './utils/env';
 
 const client = new ApolloClient({
-  uri: getEnvVar('REACT_APP_GRAPHQL_SERVER_URI'),
+  uri: getEnvVar('VITE_GRAPHQL_SERVER_URI'),
   cache: new InMemoryCache(),
 });
 
-ReactDOM.render(
+const root = document.getElementById('root');
+
+if (!root) {
+  throw new Error('Root element not found');
+}
+
+createRoot(root).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -22,6 +29,5 @@ ReactDOM.render(
         <Users />
       </ApolloProvider>
     </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );

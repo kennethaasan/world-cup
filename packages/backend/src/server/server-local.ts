@@ -1,23 +1,19 @@
-import { ApolloServer } from 'apollo-server';
-import responseCachePlugin from 'apollo-server-plugin-response-cache';
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
+import { IExecutableSchemaDefinition } from '@graphql-tools/schema';
 import { getContext } from '../context';
-import { getDataSources } from '../data-sources';
 import { resolvers, typeDefs } from '../schema';
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers,
+  resolvers: resolvers as IExecutableSchemaDefinition['resolvers'],
   plugins: [responseCachePlugin()],
-  dataSources: () => {
-    return getDataSources();
-  },
-  context: () => {
-    return getContext();
-  },
 });
 
-server
-  .listen()
+startStandaloneServer(server, {
+  context: () => Promise.resolve(getContext()),
+})
   .then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
   })

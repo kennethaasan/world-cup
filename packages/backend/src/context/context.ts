@@ -1,14 +1,8 @@
-import { DataSources } from '../data-sources';
-
-interface ContextWithoutDataSources {
+export interface Context {
   test: string;
 }
 
-export interface Context extends ContextWithoutDataSources {
-  dataSources: DataSources;
-}
-
-export function getContext(): ContextWithoutDataSources {
+export function getContext(): Context {
   return {
     test: 'tipping.aasan.dev',
   };

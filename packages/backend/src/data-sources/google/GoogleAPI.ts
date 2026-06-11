@@ -1,5 +1,4 @@
-import { DataSourceConfig } from 'apollo-datasource';
-import { RequestOptions, RESTDataSource } from 'apollo-datasource-rest';
+import { AugmentedRequest, RESTDataSource } from '@apollo/datasource-rest';
 import { Question, User } from '../../models';
 import { getEnvVar } from '../../utils/env';
 import { getPoints } from './points';
@@ -11,12 +10,10 @@ const GOOGLE_SHEETS_RANGE = 'A1:AY27';
 export class GoogleAPI extends RESTDataSource {
   baseURL = 'https://sheets.googleapis.com';
 
-  constructor() {
-    super();
-    this.initialize({} as DataSourceConfig<unknown>);
-  }
-
-  protected willSendRequest(request: RequestOptions): void {
+  protected override willSendRequest(
+    _path: string,
+    request: AugmentedRequest
+  ): void {
     request.params.set('key', GOOGLE_API_KEY);
   }
 

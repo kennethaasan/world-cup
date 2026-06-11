@@ -3,18 +3,24 @@
   "version": "0.0.1",
   "private": true,
   "description": "world-cup",
+  "packageManager": "npm@11.16.0",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "lerna": "lerna",
-    "postinstall": "lerna bootstrap",
-    "start": "lerna run start --stream --parallel",
-    "build": "lerna run build",
-    "test": "lerna run test",
+    "start": "npm run start --workspace world-cup-backend & npm run start --workspace world-cup-frontend & npm run start --workspace world-cup-cdk & wait",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
     "pretest": "npm run prettier:check && npm run eslint",
-    "prettier:check": "prettier --check \"**/*.{json,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
-    "prettier:fix": "prettier --write \"**/*.{json,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
-    "eslint": "eslint . --ext ts,tsx --max-warnings=0",
-    "deploy": "lerna run cdk:deploy",
-    "synth": "lerna run cdk:synth"
+    "prettier:check": "prettier --check \"**/*.{json,js,mjs,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
+    "prettier:fix": "prettier --write \"**/*.{json,js,mjs,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
+    "eslint": "eslint . --max-warnings=0",
+    "deploy": "npm run cdk:deploy --workspace world-cup-cdk",
+    "synth": "npm run cdk:synth --workspace world-cup-cdk"
   },
   "repository": {
     "type": "git",
@@ -26,17 +32,16 @@
   },
   "homepage": "https://github.com/kennethaasan/world-cup#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.14.0",
-    "@typescript-eslint/parser": "^4.14.0",
-    "eslint": "^7.18.0",
-    "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-flowtype": "^5.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "lerna": "^3.22.1",
-    "prettier": "^2.7.1",
-    "typescript": "^4.9.3"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.2",
+    "eslint": "^10.4.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-node": "^0.4.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.16.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0"
   }
 }

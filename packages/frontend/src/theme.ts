@@ -1,6 +1,6 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   typography: {
     fontFamily: [
       '-apple-system',
@@ -17,6 +17,6 @@ export const theme = createMuiTheme({
     fontSize: 12,
   },
   palette: {
-    type: 'dark',
+    mode: 'dark',
   },
 });

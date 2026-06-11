@@ -14,10 +14,9 @@
     "cdk:synth": "cdk synth"
   },
   "dependencies": {
-    "@types/node": "^18.11.9",
-    "aws-cdk": "^2.144.0",
-    "aws-cdk-lib": "^2.144.0",
-    "dotenv": "^16.0.3",
-    "ts-node": "^10.9.1"
+    "aws-cdk": "^2.1126.0",
+    "aws-cdk-lib": "^2.258.1",
+    "dotenv": "^17.4.2",
+    "ts-node": "^10.9.2"
   }
 }
