@@ -33,7 +33,7 @@ export class WorldCupStack extends Stack {
       {
         code: Code.fromAsset(path.join(__dirname, '../../backend')),
         handler: 'build/index.handler',
-        runtime: Runtime.NODEJS_18_X,
+        runtime: Runtime.NODEJS_24_X,
         timeout: Duration.seconds(30),
         memorySize: 1024,
         environment: {
@@ -120,7 +120,7 @@ export class WorldCupStack extends Stack {
     });
 
     new BucketDeployment(this, 'deploy-with-invalidation', {
-      sources: [Source.asset(path.join(__dirname, '../../frontend/build'))],
+      sources: [Source.asset(path.join(__dirname, '../../frontend/dist'))],
       destinationBucket: frontendBucket,
       distribution: frontendDistribution,
       distributionPaths: ['/*'],

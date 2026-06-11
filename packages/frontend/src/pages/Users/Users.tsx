@@ -1,10 +1,10 @@
-import { Box, Grid } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import {
   DataGrid,
-  GridCellParams,
-  GridColumns,
-  GridRowData,
-} from '@material-ui/data-grid';
+  GridColDef,
+  GridRenderCellParams,
+  GridValidRowModel,
+} from '@mui/x-data-grid';
 import React from 'react';
 import { Container } from '../../components/Container';
 import { Loading } from '../../components/Loading';
@@ -34,7 +34,7 @@ export function Users() {
     return <Loading />;
   }
 
-  const columns: GridColumns = [
+  const columns: GridColDef[] = [
     {
       field: 'name',
       headerName: 'Navn',
@@ -45,13 +45,13 @@ export function Users() {
       headerName: 'Poeng',
       width: 108,
       type: 'number',
-      renderCell: (params: GridCellParams) => {
+      renderCell: (params: GridRenderCellParams) => {
         return <strong>{params.value}</strong>;
       },
     },
   ];
 
-  const rows: GridRowData[] = [];
+  const rows: GridValidRowModel[] = [];
 
   if (data && data.getUsers) {
     data.getUsers[0].questions?.forEach((question) => {
@@ -59,10 +59,10 @@ export function Users() {
         field: question.question,
         headerName: question.question,
         width: getWidth(question.question),
-        renderCell: (params: GridCellParams) => {
+        renderCell: (params: GridRenderCellParams) => {
           const cellQuestion = params.value as Question;
 
-          let color = undefined;
+          let color: string;
 
           if (question.blueprint) {
             if (cellQuestion.points === cellQuestion.max_points) {
@@ -77,7 +77,7 @@ export function Users() {
           }
 
           return (
-            <Box component="span" color={color}>
+            <Box component="span" sx={{ color }}>
               {cellQuestion.answer}
             </Box>
           );
@@ -102,17 +102,15 @@ export function Users() {
 
   return (
     <Container>
-      <Grid container spacing={2}>
-        <Grid item xs={12} component="main">
-          <DataGrid
-            autoHeight
-            rows={rows}
-            rowHeight={40}
-            columns={columns}
-            hideFooter
-          />
-        </Grid>
-      </Grid>
+      <Box component="main">
+        <DataGrid
+          autoHeight
+          rows={rows}
+          rowHeight={40}
+          columns={columns}
+          hideFooter
+        />
+      </Box>
     </Container>
   );
 }

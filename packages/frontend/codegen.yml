@@ -8,6 +8,7 @@ generates:
         Date: string
         Time: string
         DateTime: string
+      apolloReactHooksImportFrom: '@apollo/client/react'
       withHooks: true
       withComponent: false
       withHOC: false

@@ -1,30 +1,14 @@
-import { makeStyles } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  toolbar: {
-    paddingLeft: theme.spacing(),
-    paddingRight: theme.spacing(),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
-
 export function Header() {
-  const classes = useStyles();
-
   return (
-    <header className={classes.root}>
+    <header>
       <AppBar position="static">
-        <Toolbar className={classes.toolbar} disableGutters>
-          <Typography variant="h6" className={classes.title}>
+        <Toolbar disableGutters sx={{ px: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Meisterskaps-Tipping {new Date().getFullYear()}
           </Typography>
         </Toolbar>

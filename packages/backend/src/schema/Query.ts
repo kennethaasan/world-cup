@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-lambda';
+import gql from 'graphql-tag';
 import { Context } from '../context';
 import { GoogleAPI } from '../data-sources/google';
 import { IResolvers } from './types';

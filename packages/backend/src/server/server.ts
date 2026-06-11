@@ -1,19 +1,19 @@
-import { ApolloServer } from 'apollo-server-lambda';
-import responseCachePlugin from 'apollo-server-plugin-response-cache';
-import { getContext } from '../context';
-import { getDataSources } from '../data-sources';
+import { ApolloServer } from '@apollo/server';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
+import {
+  handlers,
+  startServerAndCreateLambdaHandler,
+} from '@as-integrations/aws-lambda';
+import { IExecutableSchemaDefinition } from '@graphql-tools/schema';
 import { resolvers, typeDefs } from '../schema';
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers,
+  resolvers: resolvers as IExecutableSchemaDefinition['resolvers'],
   plugins: [responseCachePlugin()],
-  dataSources: () => {
-    return getDataSources();
-  },
-  context: () => {
-    return getContext();
-  },
 });
 
-export const handler = server.createHandler();
+export const handler = startServerAndCreateLambdaHandler(
+  server,
+  handlers.createAPIGatewayProxyEventRequestHandler()
+);
