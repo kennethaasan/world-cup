@@ -1,5 +1,6 @@
 import { App, Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
-import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import {
   Certificate,
@@ -28,12 +29,12 @@ export class WorldCupStack extends Stack {
   constructor(scope: App, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const graphQLServerFunction = new Function(
+    const graphQLServerFunction = new NodejsFunction(
       this,
       'graphql-server-function',
       {
-        code: Code.fromAsset(path.join(__dirname, '../../backend')),
-        handler: 'build/index.handler',
+        entry: path.join(__dirname, '../../backend/src/index.ts'),
+        handler: 'handler',
         runtime: Runtime.NODEJS_24_X,
         timeout: Duration.seconds(30),
         memorySize: 1024,
