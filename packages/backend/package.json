@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=development DEBUG=google tsx watch ./src/server/server-local.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run src --coverage=false"
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",

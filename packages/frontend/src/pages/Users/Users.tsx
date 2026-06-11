@@ -12,16 +12,21 @@ import { Question, useGetUsersQuery } from '../../generated/queries';
 import { ErrorPage } from '../ErrorPage';
 
 function getWidth(question: string): number {
-  switch (question) {
-    case 'Hvem går videre til 8-delsfinaler? Alle lag topp to og 4 av 6 lag på tredjeplass går videre til 8-delsfinaler.':
-      return 850;
-    case 'Kvartfinalelag':
-      return 450;
-    case 'Semifinalelag':
-      return 250;
-    default:
-      return 200;
+  if (
+    question.includes('Hvem går videre til 16-delsfinaler') ||
+    question.includes('Hvilke lag finner vi i 8-delsfinalene?')
+  ) {
+    return 850;
+  } else if (question.includes('kvartfinalene')) {
+    return 450;
+  } else if (
+    question.includes('semifinalene') ||
+    question.includes('finalen')
+  ) {
+    return 320;
   }
+
+  return 200;
 }
 
 export function Users() {

@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-function getOptionalEnvVar(environmentVariable: string): string | undefined {
+export function getOptionalEnvVar(
+  environmentVariable: string
+): string | undefined {
   return process.env[environmentVariable];
 }
 
