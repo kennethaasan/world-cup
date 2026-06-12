@@ -7,6 +7,10 @@ const generatedFile = resolve(currentDirectory, '../src/generated/queries.ts');
 
 let contents = readFileSync(generatedFile, 'utf8');
 
+// @graphql-codegen/typescript-react-apollo currently emits duplicate enum
+// aliases and Apollo v4 Suspense hooks that do not typecheck in this setup.
+// Keep this postprocess narrow so it only removes the incompatible generated
+// output while preserving the hooks the app actually imports.
 const seenEnumAliases = new Set();
 contents = contents.replace(
   /export type (QuestionCategory|QuestionStatus) =[\s\S]*?;\n\n/g,

@@ -23,7 +23,3 @@ generates:
   ./graphql.schema.json:
     plugins:
       - 'introspection'
-hooks:
-  afterAllFileWrite:
-    - node scripts/cleanup-codegen.mjs
-    - ../../node_modules/.bin/prettier --write

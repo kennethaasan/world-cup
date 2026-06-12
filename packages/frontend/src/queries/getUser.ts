@@ -7,8 +7,8 @@ export const GET_OVERVIEW = gql`
       name
       rank
       points
-      maxPoints
-      remainingPossiblePoints
+      max_points
+      remaining_possible_points
       questions {
         question
         answer

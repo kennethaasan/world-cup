@@ -15,8 +15,8 @@ export const typeDefs = gql`
     name: String!
     rank: Int!
     points: Int!
-    maxPoints: Int!
-    remainingPossiblePoints: Int!
+    max_points: Int!
+    remaining_possible_points: Int!
     questions: [Question!]
   }
 `;
@@ -39,10 +39,10 @@ export const resolvers: IResolvers<IUser> = {
     points: (user): number => {
       return user.points;
     },
-    maxPoints: (user): number => {
+    max_points: (user): number => {
       return user.maxPoints;
     },
-    remainingPossiblePoints: (user): number => {
+    remaining_possible_points: (user): number => {
       return user.remainingPossiblePoints;
     },
     questions: (user): IQuestion[] | undefined => {

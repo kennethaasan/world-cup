@@ -26,8 +26,8 @@ const users = vi.hoisted<User[]>(() => [
     name: 'Anna',
     rank: 1,
     points: 3,
-    maxPoints: 5,
-    remainingPossiblePoints: 2,
+    max_points: 5,
+    remaining_possible_points: 2,
     questions: [
       {
         question: 'Mexico - Sør-Afrika',
@@ -54,8 +54,8 @@ const users = vi.hoisted<User[]>(() => [
     name: 'Bjørn',
     rank: 2,
     points: 1,
-    maxPoints: 5,
-    remainingPossiblePoints: 2,
+    max_points: 5,
+    remaining_possible_points: 2,
     questions: [
       {
         question: 'Mexico - Sør-Afrika',
@@ -393,9 +393,9 @@ describe('Users', () => {
     expect(screen.getByText('Mulige poeng igjen')).toBeInTheDocument();
     expect(
       latestDataGridProps.current?.columns.map((column) => column.field)
-    ).not.toContain('remainingPossiblePoints');
+    ).not.toContain('remaining_possible_points');
     expect(latestDataGridProps.current?.rows[0]).not.toHaveProperty(
-      'remainingPossiblePoints'
+      'remaining_possible_points'
     );
   });
 

@@ -56,12 +56,12 @@ export type QuestionStatus = 'CORRECT' | 'PARTIAL' | 'UNSCORED' | 'WRONG';
 export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
-  maxPoints: Scalars['Int']['output'];
+  max_points: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   points: Scalars['Int']['output'];
   questions?: Maybe<Array<Question>>;
   rank: Scalars['Int']['output'];
-  remainingPossiblePoints: Scalars['Int']['output'];
+  remaining_possible_points: Scalars['Int']['output'];
 };
 
 export type GetUserQueryVariables = Exact<{
@@ -74,8 +74,8 @@ export type GetUserQuery = {
     name: string;
     rank: number;
     points: number;
-    maxPoints: number;
-    remainingPossiblePoints: number;
+    max_points: number;
+    remaining_possible_points: number;
     questions: Array<{
       question: string;
       answer: string;
@@ -96,8 +96,8 @@ export type GetUsersQuery = {
     name: string;
     rank: number;
     points: number;
-    maxPoints: number;
-    remainingPossiblePoints: number;
+    max_points: number;
+    remaining_possible_points: number;
     questions: Array<{
       question: string;
       answer: string;
@@ -117,8 +117,8 @@ export const GetUserDocument = gql`
       name
       rank
       points
-      maxPoints
-      remainingPossiblePoints
+      max_points
+      remaining_possible_points
       questions {
         question
         answer
@@ -184,8 +184,8 @@ export const GetUsersDocument = gql`
       name
       rank
       points
-      maxPoints
-      remainingPossiblePoints
+      max_points
+      remaining_possible_points
       questions {
         question
         answer

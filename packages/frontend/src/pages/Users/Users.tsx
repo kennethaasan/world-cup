@@ -287,8 +287,8 @@ function UserDetailsDrawer({
               </Typography>
               {user ? (
                 <Typography variant="body2" color="text.secondary">
-                  #{user.rank} · {user.points}/{user.maxPoints} poeng ·{' '}
-                  {user.remainingPossiblePoints} mulige igjen
+                  #{user.rank} · {user.points}/{user.max_points} poeng ·{' '}
+                  {user.remaining_possible_points} mulige igjen
                 </Typography>
               ) : null}
             </Box>
@@ -371,7 +371,7 @@ export function Users() {
   const scoredQuestions = questionSummaries.filter(
     (summary) => summary.unscored === 0
   ).length;
-  const remainingPossiblePoints = users[0]?.remainingPossiblePoints || 0;
+  const remainingPossiblePoints = users[0]?.remaining_possible_points || 0;
   const filteredUsers = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
