@@ -1,5 +1,13 @@
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { buildUsersFromGoogleSheetsData } from './GoogleAPI';
+
+const originalFetch = globalThis.fetch;
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllEnvs();
+  globalThis.fetch = originalFetch;
+});
 
 describe('buildUsersFromGoogleSheetsData', () => {
   test('adds ranks, possible points and question statuses', () => {
@@ -50,5 +58,40 @@ describe('buildUsersFromGoogleSheetsData', () => {
       { name: 'Bjørn', rank: 1 },
       { name: 'Carla', rank: 3 },
     ]);
+  });
+
+  test('fetches Google Sheets in production when an API key is configured', async () => {
+    vi.resetModules();
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('GOOGLE_API_KEY', 'test-api-key');
+    vi.stubEnv('GOOGLE_SHEETS_ID', 'sheet-id');
+    vi.stubEnv('GOOGLE_SHEETS_RANGE', "'Form Responses 1'!A1:D4");
+
+    const fetchMock = vi.fn<typeof fetch>(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            values: [
+              ['Timestamp', 'Email', 'Name', 'Mexico - Sør-Afrika'],
+              ['2026-01-01', 'a@example.com', 'Anna', '2-1'],
+              ['fasit', '', '', '2-1'],
+            ],
+          }),
+        ok: true,
+      } as Response)
+    );
+    globalThis.fetch = fetchMock;
+
+    const { GoogleAPI } = await import('./GoogleAPI');
+    const users = await new GoogleAPI().getUsers();
+
+    expect(users?.[0].name).toBe('Anna');
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const requestUrl = fetchMock.mock.calls[0][0];
+    expect(requestUrl).toBeTypeOf('string');
+    if (typeof requestUrl !== 'string') {
+      throw new Error('Expected Google Sheets request URL to be a string');
+    }
+    expect(requestUrl).toContain('key=test-api-key');
   });
 });

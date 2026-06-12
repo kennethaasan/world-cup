@@ -368,12 +368,15 @@ export class GoogleAPI {
   private async getGoogleSheetsData(): Promise<string[][]> {
     const searchParams = new URLSearchParams();
     const accessToken = await getGoogleAccessToken();
+    let shouldFetchGoogleSheets = false;
 
     if (accessToken) {
       searchParams.set('valueRenderOption', 'FORMATTED_VALUE');
+      shouldFetchGoogleSheets = true;
     } else if (GOOGLE_API_KEY) {
       searchParams.set('key', GOOGLE_API_KEY);
       searchParams.set('valueRenderOption', 'FORMATTED_VALUE');
+      shouldFetchGoogleSheets = true;
     } else if (USE_GWS_DEV_SOURCE) {
       try {
         console.warn('Using gws CLI to read Google Sheets in development');
@@ -392,10 +395,12 @@ export class GoogleAPI {
       }
     }
 
-    if (USE_DEV_SHEET_FALLBACK) {
-      console.warn('Using development Google Sheets fixture');
-      return DEV_GOOGLE_SHEETS_DATA;
-    } else {
+    if (!shouldFetchGoogleSheets) {
+      if (USE_DEV_SHEET_FALLBACK) {
+        console.warn('Using development Google Sheets fixture');
+        return DEV_GOOGLE_SHEETS_DATA;
+      }
+
       throw new Error(
         'GOOGLE_API_KEY, Google service account credentials, or Google OAuth refresh credentials are required'
       );
