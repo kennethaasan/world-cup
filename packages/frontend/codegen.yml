@@ -9,9 +9,13 @@ generates:
         Time: string
         DateTime: string
       apolloReactHooksImportFrom: '@apollo/client/react'
+      apolloReactCommonImportFrom: '@apollo/client/react'
       withHooks: true
+      withSuspense: false
       withComponent: false
       withHOC: false
+      enumsAsTypes: true
+      preResolveTypes: false
     plugins:
       - 'typescript'
       - 'typescript-operations'
@@ -19,6 +23,3 @@ generates:
   ./graphql.schema.json:
     plugins:
       - 'introspection'
-hooks:
-  afterAllFileWrite:
-    - ../../node_modules/.bin/prettier --write

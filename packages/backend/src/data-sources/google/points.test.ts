@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { getPoints } from './points';
+import { getMaxPoints, getPoints } from './points';
 
 describe('getPoints', () => {
   test('scores group-stage matches from the 2026 form as winner plus exact result', () => {
@@ -99,5 +99,16 @@ describe('getPoints', () => {
       points: 1,
       maxPoints: 1,
     });
+  });
+
+  test('estimates max points before the fasit row is filled in', () => {
+    expect(getMaxPoints('Mexico - Sør-Afrika', undefined)).toBe(2);
+    expect(
+      getMaxPoints('Hvilke lag finner vi i semifinalene?', undefined)
+    ).toBe(20);
+    expect(getMaxPoints('Hvilke to lag finner vi i finalen?', undefined)).toBe(
+      14
+    );
+    expect(getMaxPoints('Toppscorer etter gruppespill', undefined)).toBe(3);
   });
 });

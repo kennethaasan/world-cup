@@ -5,13 +5,18 @@ export const GET_OVERVIEW = gql`
     getUser(userId: $userId) {
       id
       name
+      rank
       points
+      max_points
+      remaining_possible_points
       questions {
         question
         answer
         blueprint
         points
         max_points
+        status
+        category
       }
     }
   }

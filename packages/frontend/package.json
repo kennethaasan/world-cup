@@ -18,7 +18,7 @@
     "build": "vite build",
     "test": "vitest run --coverage=false",
     "test:watch": "vitest",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen && node scripts/cleanup-codegen.mjs && ../../node_modules/.bin/prettier --ignore-path ../../.prettierignore --write src/generated/queries.ts graphql.schema.json"
   },
   "browserslist": {
     "production": [

@@ -1,26 +1,26 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client/react';
+import * as ApolloReactCommon from '@apollo/client/react';
+import * as ApolloReactHooks from '@apollo/client/react';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  Date: string;
-  DateTime: string;
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  Date: { input: string; output: string };
+  DateTime: { input: string; output: string };
 };
 
 export type Query = {
@@ -30,44 +30,60 @@ export type Query = {
 };
 
 export type QueryGetUserArgs = {
-  userId: Scalars['ID'];
+  userId: Scalars['ID']['input'];
 };
 
 export type Question = {
   __typename?: 'Question';
-  answer: Scalars['String'];
-  blueprint?: Maybe<Scalars['String']>;
-  max_points?: Maybe<Scalars['Int']>;
-  points?: Maybe<Scalars['Int']>;
-  question: Scalars['String'];
+  answer: Scalars['String']['output'];
+  blueprint?: Maybe<Scalars['String']['output']>;
+  category: QuestionCategory;
+  max_points?: Maybe<Scalars['Int']['output']>;
+  points?: Maybe<Scalars['Int']['output']>;
+  question: Scalars['String']['output'];
+  status: QuestionStatus;
 };
+
+export type QuestionCategory =
+  | 'AWARDS'
+  | 'KNOCKOUT'
+  | 'MATCHES'
+  | 'NORWAY'
+  | 'OTHER';
+
+export type QuestionStatus = 'CORRECT' | 'PARTIAL' | 'UNSCORED' | 'WRONG';
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  points: Scalars['Int'];
+  id: Scalars['ID']['output'];
+  max_points: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  points: Scalars['Int']['output'];
   questions?: Maybe<Array<Question>>;
+  rank: Scalars['Int']['output'];
+  remaining_possible_points: Scalars['Int']['output'];
 };
 
 export type GetUserQueryVariables = Exact<{
-  userId: Scalars['ID'];
+  userId: string | number;
 }>;
 
 export type GetUserQuery = {
-  __typename?: 'Query';
-  getUser?: {
-    __typename?: 'User';
+  getUser: {
     id: string;
     name: string;
+    rank: number;
     points: number;
-    questions?: Array<{
-      __typename?: 'Question';
+    max_points: number;
+    remaining_possible_points: number;
+    questions: Array<{
       question: string;
       answer: string;
-      blueprint?: string | null;
-      points?: number | null;
-      max_points?: number | null;
+      blueprint: string | null;
+      points: number | null;
+      max_points: number | null;
+      status: QuestionStatus;
+      category: QuestionCategory;
     }> | null;
   } | null;
 };
@@ -75,19 +91,21 @@ export type GetUserQuery = {
 export type GetUsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetUsersQuery = {
-  __typename?: 'Query';
-  getUsers?: Array<{
-    __typename?: 'User';
+  getUsers: Array<{
     id: string;
     name: string;
+    rank: number;
     points: number;
-    questions?: Array<{
-      __typename?: 'Question';
+    max_points: number;
+    remaining_possible_points: number;
+    questions: Array<{
       question: string;
       answer: string;
-      blueprint?: string | null;
-      points?: number | null;
-      max_points?: number | null;
+      blueprint: string | null;
+      points: number | null;
+      max_points: number | null;
+      status: QuestionStatus;
+      category: QuestionCategory;
     }> | null;
   }> | null;
 };
@@ -97,13 +115,18 @@ export const GetUserDocument = gql`
     getUser(userId: $userId) {
       id
       name
+      rank
       points
+      max_points
+      remaining_possible_points
       questions {
         question
         answer
         blueprint
         points
         max_points
+        status
+        category
       }
     }
   }
@@ -126,26 +149,31 @@ export const GetUserDocument = gql`
  * });
  */
 export function useGetUserQuery(
-  baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>
+  baseOptions: ApolloReactHooks.QueryHookOptions<
+    GetUserQuery,
+    GetUserQueryVariables
+  > &
+    ({ variables: GetUserQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(
+  return ApolloReactHooks.useQuery<GetUserQuery, GetUserQueryVariables>(
     GetUserDocument,
     options
   );
 }
 export function useGetUserLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetUserQuery,
+    GetUserQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(
+  return ApolloReactHooks.useLazyQuery<GetUserQuery, GetUserQueryVariables>(
     GetUserDocument,
     options
   );
 }
-export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
-export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
-export type GetUserQueryResult = Apollo.QueryResult<
+export type GetUserQueryResult = ApolloReactCommon.QueryResult<
   GetUserQuery,
   GetUserQueryVariables
 >;
@@ -154,13 +182,18 @@ export const GetUsersDocument = gql`
     getUsers {
       id
       name
+      rank
       points
+      max_points
+      remaining_possible_points
       questions {
         question
         answer
         blueprint
         points
         max_points
+        status
+        category
       }
     }
   }
@@ -182,31 +215,30 @@ export const GetUsersDocument = gql`
  * });
  */
 export function useGetUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(
-    GetUsersDocument,
-    options
-  );
-}
-export function useGetUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
     GetUsersQuery,
     GetUsersQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(
+  return ApolloReactHooks.useQuery<GetUsersQuery, GetUsersQueryVariables>(
     GetUsersDocument,
     options
   );
 }
-export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
-export type GetUsersLazyQueryHookResult = ReturnType<
-  typeof useGetUsersLazyQuery
->;
-export type GetUsersQueryResult = Apollo.QueryResult<
+export function useGetUsersLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetUsersQuery,
+    GetUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(
+    GetUsersDocument,
+    options
+  );
+}
+export type GetUsersQueryResult = ApolloReactCommon.QueryResult<
   GetUsersQuery,
   GetUsersQueryVariables
 >;

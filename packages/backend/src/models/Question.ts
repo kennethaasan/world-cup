@@ -6,6 +6,8 @@ export class Question extends Model<{
   blueprint: string | undefined;
   points: number | undefined;
   maxPoints: number | undefined;
+  status: 'UNSCORED' | 'WRONG' | 'PARTIAL' | 'CORRECT';
+  category: 'MATCHES' | 'KNOCKOUT' | 'AWARDS' | 'NORWAY' | 'OTHER';
 }> {
   public get question() {
     return this.props.question;
@@ -25,5 +27,13 @@ export class Question extends Model<{
 
   public get maxPoints() {
     return this.props.maxPoints;
+  }
+
+  public get status() {
+    return this.props.status;
+  }
+
+  public get category() {
+    return this.props.category;
   }
 }
