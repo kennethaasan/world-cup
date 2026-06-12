@@ -2,6 +2,27 @@
 
 https://tipping.aasan.dev
 
+## Local development
+
+Run the frontend and backend together:
+
+```sh
+npm run dev
+```
+
+The Vite app uses `VITE_GRAPHQL_SERVER_URI=/graphql` from
+`packages/frontend/.env.development` and proxies that path to the local backend
+at `http://localhost:4000` by default. Override the proxy target with
+`VITE_GRAPHQL_PROXY_TARGET` if needed.
+
+In development, the backend reads the real Google Sheet through the `gws` CLI
+when Google API/service-account/OAuth credentials are not configured. If `gws`
+is unavailable or not authenticated, it falls back to a small development
+fixture through the same GraphQL schema and scoring pipeline.
+
+- Set `GOOGLE_SHEETS_DEV_SOURCE=fixture` to always use the fixture.
+- Set `GOOGLE_SHEETS_DEV_FALLBACK=false` to fail instead of using the fixture.
+
 ## 2026 data source
 
 The backend defaults to the 2026 response sheet:

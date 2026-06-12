@@ -1,12 +1,16 @@
 import react from '@vitejs/plugin-react';
+import { createRequire } from 'node:module';
 import { defineConfig } from 'vitest/config';
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
       '/graphql': {
-        target: 'https://graphql.tipping.aasan.dev',
+        target:
+          process.env.VITE_GRAPHQL_PROXY_TARGET || 'http://localhost:4000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/graphql/, ''),
       },
@@ -15,7 +19,7 @@ export default defineConfig({
   resolve: {
     alias: {
       'react-transition-group/TransitionGroupContext':
-        'react-transition-group/cjs/TransitionGroupContext.js',
+        require.resolve('react-transition-group/cjs/TransitionGroupContext.js'),
     },
   },
   test: {

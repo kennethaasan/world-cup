@@ -9,9 +9,13 @@ generates:
         Time: string
         DateTime: string
       apolloReactHooksImportFrom: '@apollo/client/react'
+      apolloReactCommonImportFrom: '@apollo/client/react'
       withHooks: true
+      withSuspense: false
       withComponent: false
       withHOC: false
+      enumsAsTypes: true
+      preResolveTypes: false
     plugins:
       - 'typescript'
       - 'typescript-operations'
@@ -21,4 +25,5 @@ generates:
       - 'introspection'
 hooks:
   afterAllFileWrite:
+    - node scripts/cleanup-codegen.mjs
     - ../../node_modules/.bin/prettier --write

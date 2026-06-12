@@ -79,6 +79,36 @@ function getPointsPerCorrectAnswer(question: string): number | undefined {
   return undefined;
 }
 
+function getExpectedAnswerCount(question: string): number | undefined {
+  const normalizedQuestion = normalizeQuestion(question);
+
+  if (normalizedQuestion.includes('hvem gar videre til 16-delsfinaler')) {
+    return 32;
+  }
+
+  if (normalizedQuestion.includes('hvilke lag finner vi i 8-delsfinalene')) {
+    return 16;
+  }
+
+  if (normalizedQuestion.includes('hvilke lag finner vi i kvartfinalene')) {
+    return 8;
+  }
+
+  if (normalizedQuestion.includes('hvilke lag finner vi i semifinalene')) {
+    return 4;
+  }
+
+  if (normalizedQuestion.includes('hvilke to lag finner vi i finalen')) {
+    return 2;
+  }
+
+  if (getPointsPerCorrectAnswer(question)) {
+    return 1;
+  }
+
+  return undefined;
+}
+
 function splitAnswerList(value: string): string[] {
   return value
     .split(/[,;]|\.\s+/g)
@@ -119,6 +149,30 @@ function getWinner(score: { home: number; away: number }): number {
   return 0;
 }
 
+export function getMaxPoints(
+  question: string,
+  blueprint: string | undefined
+): number | undefined {
+  const pointsPerCorrectAnswer = getPointsPerCorrectAnswer(question);
+
+  if (pointsPerCorrectAnswer) {
+    const blueprintCount = blueprint ? splitAnswerList(blueprint).length : 0;
+    const answerCount = blueprintCount || getExpectedAnswerCount(question);
+
+    if (!answerCount) {
+      return undefined;
+    }
+
+    return pointsPerCorrectAnswer * answerCount;
+  }
+
+  if (blueprint ? parseScore(blueprint) : question.includes(' - ')) {
+    return POINTS_MATCH_RESULT + POINTS_MATCH_WINNER;
+  }
+
+  return undefined;
+}
+
 export function getPoints(
   question: string,
   answer: string,
@@ -148,7 +202,7 @@ export function getPoints(
 
     return {
       points,
-      maxPoints: pointsPerCorrectAnswer * blueprints.size,
+      maxPoints: getMaxPoints(question, blueprint) || 0,
     };
   }
 

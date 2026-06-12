@@ -4,12 +4,29 @@ import { Question } from '../models';
 import { IResolvers } from './types';
 
 export const typeDefs = gql`
+  enum QuestionStatus {
+    UNSCORED
+    WRONG
+    PARTIAL
+    CORRECT
+  }
+
+  enum QuestionCategory {
+    MATCHES
+    KNOCKOUT
+    AWARDS
+    NORWAY
+    OTHER
+  }
+
   type Question {
     question: String!
     answer: String!
     blueprint: String
     points: Int
     max_points: Int
+    status: QuestionStatus!
+    category: QuestionCategory!
   }
 `;
 
@@ -31,6 +48,12 @@ export const resolvers: IResolvers<IQuestion, Context> = {
     },
     max_points: (question): number | undefined => {
       return question.maxPoints;
+    },
+    status: (question): IQuestion['status'] => {
+      return question.status;
+    },
+    category: (question): IQuestion['category'] => {
+      return question.category;
     },
   },
 };
