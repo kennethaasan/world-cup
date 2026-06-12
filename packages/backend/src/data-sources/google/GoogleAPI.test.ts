@@ -64,6 +64,11 @@ describe('buildUsersFromGoogleSheetsData', () => {
     vi.resetModules();
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('GOOGLE_API_KEY', 'test-api-key');
+    vi.stubEnv('GOOGLE_SERVICE_ACCOUNT_EMAIL', '');
+    vi.stubEnv('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY', '');
+    vi.stubEnv('GOOGLE_OAUTH_CLIENT_ID', '');
+    vi.stubEnv('GOOGLE_OAUTH_CLIENT_SECRET', '');
+    vi.stubEnv('GOOGLE_OAUTH_REFRESH_TOKEN', '');
     vi.stubEnv('GOOGLE_SHEETS_ID', 'sheet-id');
     vi.stubEnv('GOOGLE_SHEETS_RANGE', "'Form Responses 1'!A1:D4");
 
