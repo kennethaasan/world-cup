@@ -152,22 +152,60 @@ function Metric({
   label,
   value,
   detail,
+  tone,
 }: {
   label: string;
   value: string | number;
   detail?: string;
+  tone: 'blue' | 'green' | 'pink' | 'gold';
 }) {
+  const accents = {
+    blue: 'linear-gradient(135deg, rgba(0, 212, 255, 0.45), rgba(0, 120, 255, 0.12))',
+    green:
+      'linear-gradient(135deg, rgba(53, 242, 163, 0.42), rgba(53, 242, 163, 0.1))',
+    pink: 'linear-gradient(135deg, rgba(255, 61, 127, 0.4), rgba(255, 61, 127, 0.1))',
+    gold: 'linear-gradient(135deg, rgba(255, 209, 102, 0.38), rgba(255, 209, 102, 0.1))',
+  };
+
   return (
-    <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1 }}>
-      <Typography variant="caption" color="text.secondary">
-        {label}
-      </Typography>
-      <Typography variant="h5">{value}</Typography>
-      {detail ? (
-        <Typography variant="caption" color="text.secondary">
-          {detail}
+    <Paper
+      variant="outlined"
+      sx={{
+        p: { xs: 1.75, md: 2 },
+        borderRadius: 4,
+        overflow: 'hidden',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          background: accents[tone],
+          opacity: 0.76,
+          pointerEvents: 'none',
+        },
+      }}
+    >
+      <Box sx={{ position: 'relative' }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            fontWeight: 800,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}
+        >
+          {label}
         </Typography>
-      ) : null}
+        <Typography variant="h5" sx={{ mt: 0.5, fontSize: { xs: 26, md: 30 } }}>
+          {value}
+        </Typography>
+        {detail ? (
+          <Typography variant="caption" color="text.secondary">
+            {detail}
+          </Typography>
+        ) : null}
+      </Box>
     </Paper>
   );
 }
@@ -179,10 +217,18 @@ function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
     .slice(0, 5);
 
   return (
-    <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1, minWidth: 0 }}>
-      <Typography variant="subtitle2" gutterBottom>
-        Mest utslagsgivende
-      </Typography>
+    <Paper
+      variant="outlined"
+      sx={{ p: { xs: 1.5, md: 2 }, borderRadius: 4, minWidth: 0 }}
+    >
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
+        <Box component="span" sx={{ color: 'primary.main' }}>
+          ✦
+        </Box>
+        <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>
+          Mest utslagsgivende
+        </Typography>
+      </Stack>
       <Stack spacing={1}>
         {decisiveQuestions.length ? (
           decisiveQuestions.map((summary) => (
@@ -191,7 +237,7 @@ function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
               sx={{
                 alignItems: 'center',
                 display: 'flex',
-                gap: 1,
+                gap: 1.5,
                 maxWidth: '100%',
                 minWidth: 0,
                 whiteSpace: 'nowrap',
@@ -277,8 +323,21 @@ function UserDetailsDrawer({
   const groupedQuestions = getQuestionGroups(user?.questions || []);
 
   return (
-    <Drawer anchor="right" open={Boolean(userId)} onClose={onClose}>
-      <Box sx={{ width: { xs: '100vw', sm: 560 }, p: 2 }}>
+    <Drawer
+      anchor="right"
+      open={Boolean(userId)}
+      onClose={onClose}
+      slotProps={{
+        paper: {
+          sx: {
+            background:
+              'linear-gradient(155deg, rgba(13, 25, 48, 0.96), rgba(6, 16, 31, 0.96))',
+            borderLeft: '1px solid rgba(219, 234, 254, 0.16)',
+          },
+        },
+      }}
+    >
+      <Box sx={{ width: { xs: '100vw', sm: 580 }, p: { xs: 2, sm: 3 } }}>
         <Stack spacing={2}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -312,7 +371,7 @@ function UserDetailsDrawer({
                 <Paper
                   key={question.question}
                   variant="outlined"
-                  sx={{ p: 1.25, borderRadius: 1 }}
+                  sx={{ p: 1.5, borderRadius: 3 }}
                 >
                   <Stack spacing={0.75}>
                     <Stack
@@ -489,7 +548,7 @@ export function Users() {
 
   return (
     <Container>
-      <Stack component="main" spacing={1.5}>
+      <Stack component="main" spacing={2}>
         <Box
           sx={{
             display: 'grid',
@@ -501,25 +560,79 @@ export function Users() {
             gap: 1,
           }}
         >
-          <Metric label="Deltakere" value={users.length} />
+          <Metric label="Deltakere" value={users.length} tone="blue" />
           <Metric
             label="Avgjorte spørsmål"
             value={`${scoredQuestions}/${questions.length}`}
+            tone="green"
           />
-          <Metric label="Mulige poeng igjen" value={remainingPossiblePoints} />
+          <Metric
+            label="Mulige poeng igjen"
+            value={remainingPossiblePoints}
+            tone="pink"
+          />
           <Metric
             label="Sist oppdatert"
             value={formatDateTime(lastUpdatedAt)}
             detail="fra Google Sheets"
+            tone="gold"
           />
         </Box>
+        <Paper
+          variant="outlined"
+          sx={{
+            p: { xs: 1.5, md: 2 },
+            borderRadius: 4,
+            background:
+              'linear-gradient(110deg, rgba(0, 212, 255, 0.16), rgba(255, 61, 127, 0.12), rgba(53, 242, 163, 0.12))',
+          }}
+        >
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={1.5}
+            sx={{ alignItems: { xs: 'stretch', md: 'center' } }}
+          >
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: 'center', flex: 1 }}
+            >
+              <Box
+                component="span"
+                sx={{ color: 'primary.main', fontSize: 26 }}
+              >
+                🏟️
+              </Box>
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 900 }}>
+                  2026-modus aktivert
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Klikk på en deltaker for detaljer, eller filtrer spørsmålene
+                  før avspark.
+                </Typography>
+              </Box>
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ flexWrap: 'wrap', gap: 1 }}
+            >
+              <Chip label="🌎 48 lag" variant="outlined" />
+              <Chip label="🏆 104 kamper" color="secondary" />
+            </Stack>
+          </Stack>
+        </Paper>
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
           <Button href="#resultattabell" variant="contained" fullWidth>
             Gå til tabell
           </Button>
         </Box>
         <QuestionSummaries summaries={questionSummaries} />
-        <Paper variant="outlined" sx={{ p: 1, borderRadius: 1 }}>
+        <Paper
+          variant="outlined"
+          sx={{ p: { xs: 1.25, md: 1.5 }, borderRadius: 4 }}
+        >
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={1}
@@ -556,7 +669,7 @@ export function Users() {
               label="Vis svar"
             />
             <Box sx={{ flex: 1 }} />
-            <Button onClick={() => void refetch()} variant="outlined">
+            <Button onClick={() => void refetch()} variant="contained">
               Oppdater
             </Button>
           </Stack>
@@ -573,24 +686,51 @@ export function Users() {
               setSelectedUserId(String(params.id))
             }
             sx={{
-              borderRadius: 1,
+              border: '1px solid rgba(219, 234, 254, 0.16)',
+              borderRadius: 4,
+              overflow: 'hidden',
+              background:
+                'linear-gradient(145deg, rgba(13, 25, 48, 0.72), rgba(6, 16, 31, 0.52))',
+              backdropFilter: 'blur(18px)',
+              '& .MuiDataGrid-main': {
+                borderRadius: 4,
+              },
               '& .MuiDataGrid-cell': {
                 alignItems: 'center',
+                borderColor: 'rgba(219, 234, 254, 0.08)',
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                background:
+                  'linear-gradient(90deg, rgba(0, 212, 255, 0.18), rgba(255, 61, 127, 0.12))',
+                borderColor: 'rgba(219, 234, 254, 0.14)',
+              },
+              '& .MuiDataGrid-columnHeaderTitle': {
+                fontWeight: 900,
+              },
+              '& .MuiDataGrid-row:hover': {
+                backgroundColor: 'rgba(0, 212, 255, 0.08)',
+                cursor: 'pointer',
               },
               '& .sticky-rank': {
                 position: 'sticky',
                 left: 0,
                 zIndex: 2,
+                backgroundColor: 'rgba(9, 27, 52, 0.94)',
+                backdropFilter: 'blur(18px)',
               },
               '& .sticky-name': {
                 position: 'sticky',
                 left: 72,
                 zIndex: 2,
+                backgroundColor: 'rgba(9, 27, 52, 0.94)',
+                backdropFilter: 'blur(18px)',
               },
               '& .sticky-points': {
                 position: 'sticky',
                 left: 252,
                 zIndex: 2,
+                backgroundColor: 'rgba(9, 27, 52, 0.94)',
+                backdropFilter: 'blur(18px)',
               },
               '& .MuiDataGrid-columnHeader.sticky-rank, & .MuiDataGrid-columnHeader.sticky-name, & .MuiDataGrid-columnHeader.sticky-points':
                 {
