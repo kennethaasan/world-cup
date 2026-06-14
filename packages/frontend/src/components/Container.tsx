@@ -6,10 +6,12 @@ export function Container({ children }: { children: React.ReactNode }) {
     <Box
       sx={{
         width: '100%',
+        maxWidth: 1800,
         mx: 'auto',
         boxSizing: 'border-box',
-        pt: 1,
-        px: 1,
+        pt: { xs: 1.5, md: 2.5 },
+        pb: { xs: 3, md: 5 },
+        px: { xs: 1.25, sm: 2, lg: 3 },
       }}
     >
       {children}

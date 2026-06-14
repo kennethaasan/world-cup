@@ -18,7 +18,8 @@
     "build": "vite build",
     "test": "vitest run --coverage=false",
     "test:watch": "vitest",
-    "codegen": "graphql-codegen && node scripts/cleanup-codegen.mjs && ../../node_modules/.bin/prettier --ignore-path ../../.prettierignore --write src/generated/queries.ts graphql.schema.json"
+    "codegen": "graphql-codegen && node scripts/cleanup-codegen.mjs && ../../node_modules/.bin/prettier --ignore-path ../../.prettierignore --write src/generated/queries.ts graphql.schema.json",
+    "test:e2e": "playwright test"
   },
   "browserslist": {
     "production": [
@@ -46,6 +47,7 @@
     "@vitejs/plugin-react": "^6.0.2",
     "jsdom": "^29.1.1",
     "vite": "^8.0.16",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "@playwright/test": "^1.60.0"
   }
 }

@@ -15,7 +15,17 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: npm run build
         env:
           VITE_GRAPHQL_SERVER_URI: https://graphql.tipping.aasan.dev
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v6.0.0
+        if: always()
+        with:
+          name: playwright-artifacts
+          path: |
+            packages/frontend/playwright-report
+            packages/frontend/test-results
+          if-no-files-found: ignore
