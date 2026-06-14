@@ -22,7 +22,8 @@
     "prettier:fix": "prettier --write \"**/*.{json,js,mjs,ts,tsx,md,mdx,css,html,yml,yaml,scss}\"",
     "eslint": "eslint . --max-warnings=0",
     "deploy": "npm run cdk:deploy --workspace world-cup-cdk",
-    "synth": "npm run cdk:synth --workspace world-cup-cdk"
+    "synth": "npm run cdk:synth --workspace world-cup-cdk",
+    "test:e2e": "npm run test:e2e --workspace world-cup-frontend"
   },
   "repository": {
     "type": "git",
