@@ -183,8 +183,9 @@ function Metric({
     <Paper
       variant="outlined"
       sx={{
-        p: { xs: 1.75, md: 2 },
-        borderRadius: 4,
+        minHeight: { xs: 92, md: 104 },
+        p: { xs: 1.5, md: 1.75 },
+        borderRadius: '8px',
         overflow: 'hidden',
         position: 'relative',
         '&::before': {
@@ -203,13 +204,13 @@ function Metric({
           color="text.secondary"
           sx={{
             fontWeight: 800,
-            letterSpacing: '0.08em',
+            letterSpacing: 0,
             textTransform: 'uppercase',
           }}
         >
           {label}
         </Typography>
-        <Typography variant="h5" sx={{ mt: 0.5, fontSize: { xs: 26, md: 30 } }}>
+        <Typography variant="h5" sx={{ mt: 0.5, fontSize: { xs: 22, md: 26 } }}>
           {value}
         </Typography>
         {detail ? (
@@ -231,7 +232,7 @@ function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
   return (
     <Paper
       variant="outlined"
-      sx={{ p: { xs: 1.5, md: 2 }, borderRadius: 4, minWidth: 0 }}
+      sx={{ p: { xs: 1.5, md: 1.75 }, borderRadius: '8px', minWidth: 0 }}
     >
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1 }}>
         <Box component="span" sx={{ color: 'primary.main' }}>
@@ -383,7 +384,7 @@ function UserDetailsDrawer({
                 <Paper
                   key={question.question}
                   variant="outlined"
-                  sx={{ p: 1.5, borderRadius: 3 }}
+                  sx={{ p: 1.5, borderRadius: '8px' }}
                 >
                   <Stack spacing={0.75}>
                     <Stack
@@ -606,7 +607,7 @@ export function Users() {
           variant="outlined"
           sx={{
             p: { xs: 1.5, md: 2 },
-            borderRadius: 4,
+            borderRadius: '8px',
             background:
               'linear-gradient(110deg, rgba(0, 212, 255, 0.16), rgba(255, 61, 127, 0.12), rgba(53, 242, 163, 0.12))',
           }}
@@ -623,7 +624,7 @@ export function Users() {
             >
               <Box
                 component="span"
-                sx={{ color: 'primary.main', fontSize: 26 }}
+                sx={{ color: 'primary.main', fontSize: 22 }}
               >
                 🏟️
               </Box>
@@ -655,7 +656,7 @@ export function Users() {
         <QuestionSummaries summaries={questionSummaries} />
         <Paper
           variant="outlined"
-          sx={{ p: { xs: 1.25, md: 1.5 }, borderRadius: 4 }}
+          sx={{ p: { xs: 1.25, md: 1.5 }, borderRadius: '8px' }}
         >
           <Stack
             direction={{ xs: 'column', md: 'row' }}
@@ -718,13 +719,13 @@ export function Users() {
             }
             sx={{
               border: '1px solid rgba(219, 234, 254, 0.16)',
-              borderRadius: 4,
+              borderRadius: '8px',
               overflow: 'hidden',
               background:
                 'linear-gradient(145deg, rgba(13, 25, 48, 0.72), rgba(6, 16, 31, 0.52))',
               backdropFilter: 'blur(18px)',
               '& .MuiDataGrid-main': {
-                borderRadius: 4,
+                borderRadius: '8px',
               },
               '& .MuiDataGrid-cell': {
                 alignItems: 'center',

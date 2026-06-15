@@ -74,15 +74,24 @@ const viewports = [
   },
 ];
 
-const snapshotOptions = {
+const dashboardSnapshotOptions = {
   animations: 'disabled',
   fullPage: true,
   maxDiffPixelRatio: 0.1,
 };
 
-const screenshotOptions = {
+const dashboardScreenshotOptions = {
   animations: 'disabled',
   fullPage: true,
+};
+
+const drawerSnapshotOptions = {
+  animations: 'disabled',
+  maxDiffPixelRatio: 0.1,
+};
+
+const drawerScreenshotOptions = {
+  animations: 'disabled',
 };
 
 test.beforeEach(async ({ page }) => {
@@ -143,11 +152,11 @@ for (const viewport of viewports) {
       await expectDashboardData(page);
 
       await expect(page).toHaveScreenshot(viewport.dashboardSnapshot, {
-        ...snapshotOptions,
+        ...dashboardSnapshotOptions,
       });
 
       await page.screenshot({
-        ...screenshotOptions,
+        ...dashboardScreenshotOptions,
         path: testInfo.outputPath(viewport.dashboardSnapshot),
       });
     });
@@ -160,11 +169,11 @@ for (const viewport of viewports) {
       await openParticipantDrawer(page);
 
       await expect(page).toHaveScreenshot(viewport.drawerSnapshot, {
-        ...snapshotOptions,
+        ...drawerSnapshotOptions,
       });
 
       await page.screenshot({
-        ...screenshotOptions,
+        ...drawerScreenshotOptions,
         path: testInfo.outputPath(viewport.drawerSnapshot),
       });
     });

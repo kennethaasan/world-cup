@@ -22,24 +22,24 @@ export const theme = createTheme({
     fontSize: 13,
     h1: {
       fontWeight: 900,
-      letterSpacing: '-0.08em',
+      letterSpacing: 0,
     },
     h5: {
       fontWeight: 850,
-      letterSpacing: '-0.04em',
+      letterSpacing: 0,
     },
     h6: {
       fontWeight: 850,
-      letterSpacing: '-0.03em',
+      letterSpacing: 0,
     },
     button: {
       fontWeight: 800,
-      letterSpacing: '0.02em',
+      letterSpacing: 0,
       textTransform: 'none',
     },
   },
   shape: {
-    borderRadius: 22,
+    borderRadius: 8,
   },
   palette: {
     mode: 'dark',
@@ -84,10 +84,13 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        html: {
+          backgroundColor: '#06101f',
+        },
         body: {
           minHeight: '100vh',
           background:
-            'radial-gradient(circle at 12% 8%, rgba(0, 212, 255, 0.22), transparent 31rem), radial-gradient(circle at 88% 12%, rgba(255, 61, 127, 0.2), transparent 28rem), radial-gradient(circle at 48% 100%, rgba(53, 242, 163, 0.16), transparent 30rem), linear-gradient(135deg, #06101f 0%, #091b34 50%, #050912 100%)',
+            'linear-gradient(145deg, #082235 0%, #091b34 34%, #15142d 64%, #050912 100%)',
           backgroundAttachment: 'fixed',
         },
         '#root': {
@@ -105,17 +108,17 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage:
-            'linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035))',
-          backdropFilter: 'blur(22px)',
+            'linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035))',
+          backdropFilter: 'blur(16px)',
           borderColor: alpha('#dbeafe', 0.16),
-          boxShadow: `0 24px 80px ${alpha('#020617', 0.34)}`,
+          boxShadow: `0 16px 48px ${alpha('#020617', 0.26)}`,
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 999,
+          borderRadius: 8,
           paddingInline: 18,
         },
         contained: {
@@ -132,7 +135,7 @@ export const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 999,
+          borderRadius: 6,
           fontWeight: 800,
         },
       },
@@ -146,7 +149,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           border: `1px solid ${alpha('#dbeafe', 0.14)}`,
-          borderRadius: 18,
+          borderRadius: 8,
           backgroundColor: alpha('#06101f', 0.34),
           overflow: 'hidden',
           '&:hover': {

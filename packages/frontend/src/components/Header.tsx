@@ -11,21 +11,21 @@ function TournamentMark() {
     <Box
       aria-hidden
       sx={{
-        width: 52,
-        height: 52,
-        borderRadius: '32% 68% 44% 56% / 55% 33% 67% 45%',
+        width: 44,
+        height: 44,
+        borderRadius: '8px',
         background:
-          'conic-gradient(from 210deg, #00d4ff, #35f2a3, #f6fbff, #ff3d7f, #0078ff, #00d4ff)',
-        boxShadow: '0 0 36px rgba(0, 212, 255, 0.36)',
+          'linear-gradient(135deg, #00d4ff 0%, #35f2a3 45%, #ff3d7f 100%)',
+        boxShadow: '0 12px 28px rgba(0, 212, 255, 0.22)',
         display: { xs: 'none', sm: 'block' },
         flex: '0 0 auto',
         position: 'relative',
         '&::after': {
           content: '""',
           position: 'absolute',
-          inset: 9,
-          borderRadius: 'inherit',
-          border: '2px solid rgba(6, 16, 31, 0.72)',
+          inset: 8,
+          borderRadius: '6px',
+          border: '2px solid rgba(6, 16, 31, 0.7)',
           background:
             'linear-gradient(135deg, rgba(6, 16, 31, 0.88), rgba(13, 25, 48, 0.58))',
         },
@@ -45,17 +45,17 @@ export function Header() {
           mx: 'auto',
           overflow: 'hidden',
           border: '1px solid rgba(219, 234, 254, 0.16)',
-          borderRadius: 5,
+          borderRadius: '8px',
           background:
             'linear-gradient(135deg, rgba(13, 25, 48, 0.82), rgba(6, 16, 31, 0.62))',
-          backdropFilter: 'blur(24px)',
-          boxShadow: '0 22px 80px rgba(2, 6, 23, 0.34)',
+          backdropFilter: 'blur(18px)',
+          boxShadow: '0 16px 48px rgba(2, 6, 23, 0.28)',
           '&::before': {
             content: '""',
             position: 'absolute',
             inset: 0,
             background:
-              'radial-gradient(circle at 18% 0%, rgba(0, 212, 255, 0.26), transparent 24rem), radial-gradient(circle at 82% 12%, rgba(255, 61, 127, 0.2), transparent 22rem)',
+              'linear-gradient(90deg, rgba(0, 212, 255, 0.14), transparent 42%, rgba(255, 61, 127, 0.12))',
             pointerEvents: 'none',
           },
         }}
@@ -63,9 +63,9 @@ export function Header() {
         <Toolbar
           disableGutters
           sx={{
-            minHeight: { xs: 118, md: 136 },
+            minHeight: { xs: 104, md: 116 },
             px: { xs: 2, sm: 3 },
-            py: 2,
+            py: { xs: 1.75, md: 2 },
             position: 'relative',
             zIndex: 1,
           }}
@@ -93,8 +93,8 @@ export function Header() {
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: 34, sm: 46, md: 58 },
-                  lineHeight: 0.92,
+                  fontSize: { xs: 30, sm: 38, md: 46 },
+                  lineHeight: 1.05,
                   maxWidth: 980,
                 }}
               >
@@ -102,7 +102,7 @@ export function Header() {
               </Typography>
               <Typography
                 color="text.secondary"
-                sx={{ mt: 1, maxWidth: 720, fontSize: { xs: 14, sm: 16 } }}
+                sx={{ mt: 0.75, maxWidth: 720, fontSize: { xs: 13, sm: 14 } }}
               >
                 Live tabell, poengjakt og fasit i et nytt
                 glassmorphism-draktsett.
