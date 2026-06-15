@@ -451,10 +451,11 @@ function MobileScoreMatrix({
                             display: 'block',
                             overflowX: 'auto',
                             overflowY: 'hidden',
-                            textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
                             fontSize: 12,
                             lineHeight: '15px',
+                            overscrollBehaviorX: 'contain',
+                            touchAction: 'pan-x',
                             WebkitOverflowScrolling: 'touch',
                             scrollbarWidth: 'none',
                             '&::-webkit-scrollbar': {
