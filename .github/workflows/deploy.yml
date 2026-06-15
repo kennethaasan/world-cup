@@ -46,6 +46,16 @@ jobs:
           aws-region: eu-north-1
 
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: npm run build
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v6.0.0
+        if: always()
+        with:
+          name: playwright-artifacts
+          path: |
+            packages/frontend/playwright-report
+            packages/frontend/test-results
+          if-no-files-found: ignore
       - run: npm run cdk:deploy --workspace world-cup-cdk -- --require-approval never
