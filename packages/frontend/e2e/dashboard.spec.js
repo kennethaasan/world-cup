@@ -121,13 +121,19 @@ async function expectDashboardData(page) {
   await expect(page.getByText('Anna')).toBeVisible();
   await expect(page.getByText('Bjørn')).toBeVisible();
   await expect(
-    page.locator('#resultattabell').getByText('Mexico - Sør-Afrika')
+    page.locator('#resultattabell').getByText('Mexico - Sør-Afrika').first()
   ).toBeVisible();
   await expect(page.locator('#resultattabell').getByText('2-1')).toBeVisible();
 }
 
 async function openParticipantDrawer(page) {
-  await page.locator('[role="row"]', { hasText: 'Anna' }).click();
+  const mobileParticipantButton = page.getByRole('button', { name: /Anna/u });
+
+  if (await mobileParticipantButton.count()) {
+    await mobileParticipantButton.first().click();
+  } else {
+    await page.locator('[role="row"]', { hasText: 'Anna' }).click();
+  }
 
   const drawer = page.getByRole('dialog');
 

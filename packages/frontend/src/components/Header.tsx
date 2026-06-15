@@ -6,43 +6,46 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-function TournamentMark() {
+function FootballMark() {
   return (
     <Box
       aria-hidden
       sx={{
         width: 44,
         height: 44,
-        borderRadius: '8px',
-        background:
-          'linear-gradient(135deg, #00d4ff 0%, #35f2a3 45%, #ff3d7f 100%)',
-        boxShadow: '0 12px 28px rgba(0, 212, 255, 0.22)',
-        display: { xs: 'none', sm: 'block' },
+        borderRadius: '50%',
+        backgroundColor: '#f6fbff',
+        boxShadow:
+          'inset -8px -10px 0 rgba(6, 16, 31, 0.18), 0 12px 28px rgba(0, 212, 255, 0.22)',
+        display: 'grid',
+        placeItems: 'center',
         flex: '0 0 auto',
-        position: 'relative',
-        '&::after': {
-          content: '""',
-          position: 'absolute',
-          inset: 8,
-          borderRadius: '6px',
-          border: '2px solid rgba(6, 16, 31, 0.7)',
-          background:
-            'linear-gradient(135deg, rgba(6, 16, 31, 0.88), rgba(13, 25, 48, 0.58))',
-        },
+        fontSize: 28,
       }}
-    />
+    >
+      ⚽
+    </Box>
   );
 }
 
 export function Header() {
   return (
-    <Box component="header" sx={{ px: { xs: 1.25, sm: 2, lg: 3 }, pt: 2 }}>
+    <Box
+      component="header"
+      sx={{
+        width: '100%',
+        maxWidth: 1800,
+        mx: 'auto',
+        boxSizing: 'border-box',
+        px: { xs: 1.25, sm: 2, lg: 3 },
+        pt: 2,
+      }}
+    >
       <AppBar
         position="static"
         elevation={0}
         sx={{
-          maxWidth: 1800,
-          mx: 'auto',
+          width: '100%',
           overflow: 'hidden',
           border: '1px solid rgba(219, 234, 254, 0.16)',
           borderRadius: '8px',
@@ -75,7 +78,7 @@ export function Header() {
             spacing={2}
             sx={{ alignItems: 'center', minWidth: 0, width: '100%' }}
           >
-            <TournamentMark />
+            <FootballMark />
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Stack
                 direction="row"
@@ -99,13 +102,6 @@ export function Header() {
                 }}
               >
                 Meisterskaps-Tipping 2026
-              </Typography>
-              <Typography
-                color="text.secondary"
-                sx={{ mt: 0.75, maxWidth: 720, fontSize: { xs: 13, sm: 14 } }}
-              >
-                Live tabell, poengjakt og fasit i et nytt
-                glassmorphism-draktsett.
               </Typography>
             </Box>
           </Stack>

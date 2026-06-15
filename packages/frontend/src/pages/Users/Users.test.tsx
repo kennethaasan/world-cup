@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -7,6 +7,7 @@ import { Users } from './Users';
 import { getQuestionSummaries } from './questionSummaries';
 
 const refetchMock = vi.hoisted(() => vi.fn());
+const isMobileViewport = vi.hoisted(() => ({ current: false }));
 const latestDataGridProps = vi.hoisted<{
   current:
     | undefined
@@ -82,8 +83,19 @@ const users = vi.hoisted<User[]>(() => [
 vi.mock('@mui/material/Box', async () => {
   const React = await import('react');
   return {
-    default: ({ children }: { children?: React.ReactNode }) =>
-      React.createElement('div', undefined, children),
+    default: ({
+      children,
+      component,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      component?: React.ElementType;
+      [key: string]: unknown;
+    }) => {
+      const cleanProps = { ...props };
+      delete cleanProps.sx;
+      return React.createElement(component || 'div', cleanProps, children);
+    },
   };
 });
 
@@ -100,11 +112,46 @@ vi.mock('@mui/material/Button', async () => {
   };
 });
 
+vi.mock('@mui/material/ButtonBase', async () => {
+  const React = await import('react');
+  return {
+    default: ({
+      children,
+      onClick,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      onClick?: () => void;
+      [key: string]: unknown;
+    }) => {
+      const cleanProps = { ...props };
+      delete cleanProps.sx;
+      return React.createElement(
+        'button',
+        { ...cleanProps, onClick },
+        children
+      );
+    },
+  };
+});
+
 vi.mock('@mui/material/Chip', async () => {
   const React = await import('react');
   return {
-    default: ({ label }: { label?: React.ReactNode }) =>
-      React.createElement('span', undefined, label),
+    default: ({
+      label,
+      ...props
+    }: {
+      label?: React.ReactNode;
+      [key: string]: unknown;
+    }) => {
+      const cleanProps = { ...props };
+      delete cleanProps.color;
+      delete cleanProps.size;
+      delete cleanProps.sx;
+      delete cleanProps.variant;
+      return React.createElement('span', cleanProps, label);
+    },
   };
 });
 
@@ -161,16 +208,38 @@ vi.mock('@mui/material/MenuItem', async () => {
 vi.mock('@mui/material/Paper', async () => {
   const React = await import('react');
   return {
-    default: ({ children }: { children?: React.ReactNode }) =>
-      React.createElement('section', undefined, children),
+    default: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: unknown;
+    }) => {
+      const cleanProps = { ...props };
+      delete cleanProps.sx;
+      delete cleanProps.variant;
+      return React.createElement('section', cleanProps, children);
+    },
   };
 });
 
 vi.mock('@mui/material/Stack', async () => {
   const React = await import('react');
   return {
-    default: ({ children }: { children?: React.ReactNode }) =>
-      React.createElement('div', undefined, children),
+    default: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: unknown;
+    }) => {
+      const cleanProps = { ...props };
+      delete cleanProps.component;
+      delete cleanProps.direction;
+      delete cleanProps.spacing;
+      delete cleanProps.sx;
+      return React.createElement('div', cleanProps, children);
+    },
   };
 });
 
@@ -237,10 +306,26 @@ vi.mock('@mui/material/TextField', async () => {
 vi.mock('@mui/material/Typography', async () => {
   const React = await import('react');
   return {
-    default: ({ children }: { children?: React.ReactNode }) =>
-      React.createElement('span', undefined, children),
+    default: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: unknown;
+    }) => {
+      const cleanProps = { ...props };
+      delete cleanProps.color;
+      delete cleanProps.noWrap;
+      delete cleanProps.sx;
+      delete cleanProps.variant;
+      return React.createElement('span', cleanProps, children);
+    },
   };
 });
+
+vi.mock('@mui/material/useMediaQuery', () => ({
+  default: () => isMobileViewport.current,
+}));
 
 vi.mock('@mui/x-data-grid', async () => {
   const React = await import('react');
@@ -319,11 +404,19 @@ vi.mock('../../generated/queries', async (importOriginal) => {
 
   return {
     ...actual,
-    useGetUserQuery: vi.fn(() => ({
-      data: undefined,
-      error: undefined,
-      loading: false,
-    })),
+    useGetUserQuery: vi.fn(
+      (options: { skip?: boolean; variables?: { userId?: string } } = {}) => ({
+        data: options.skip
+          ? undefined
+          : {
+              getUser: users.find(
+                (user) => user.id === options.variables?.userId
+              ),
+            },
+        error: undefined,
+        loading: false,
+      })
+    ),
     useGetUsersQuery: vi.fn(() => ({
       data: { getUsers: users },
       error: undefined,
@@ -353,6 +446,7 @@ describe('getQuestionSummaries', () => {
       {
         question: 'Mexico - Sør-Afrika',
         category: 'MATCHES',
+        hasBlueprint: true,
         correct: 1,
         partial: 1,
         wrong: 0,
@@ -362,6 +456,7 @@ describe('getQuestionSummaries', () => {
       {
         question: 'Toppscorer etter gruppespill',
         category: 'AWARDS',
+        hasBlueprint: false,
         correct: 0,
         partial: 0,
         wrong: 0,
@@ -374,6 +469,7 @@ describe('getQuestionSummaries', () => {
 
 describe('Users', () => {
   beforeEach(() => {
+    isMobileViewport.current = false;
     latestDataGridProps.current = undefined;
     refetchMock.mockClear();
     globalThis.ResizeObserver = ResizeObserverMock;
@@ -443,5 +539,50 @@ describe('Users', () => {
     await userEvent.click(screen.getByLabelText('Vis svar'));
 
     expect(screen.getByText('2/2')).toBeInTheDocument();
+  });
+
+  test('only shows resolved questions in the impact list', () => {
+    render(<Users />);
+
+    expect(screen.getByText('Mest utslagsgivende')).toBeInTheDocument();
+    expect(screen.getAllByText('Mexico - Sør-Afrika').length).toBeGreaterThan(
+      1
+    );
+    expect(screen.getAllByText('Toppscorer etter gruppespill')).toHaveLength(1);
+  });
+
+  test('renders a compact mobile matrix with a readable active question', async () => {
+    isMobileViewport.current = true;
+
+    render(<Users />);
+
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mobile-score-matrix')).toBeInTheDocument();
+    expect(
+      screen.getByText('Mexico - Sør-Afrika', {
+        selector: '[aria-live="polite"]',
+      })
+    ).toBeInTheDocument();
+    const participantButton = screen.getByRole('button', { name: /Anna/u });
+    expect(participantButton).toBeInTheDocument();
+    expect(participantButton).toHaveTextContent('3 poeng');
+    expect(participantButton).not.toHaveTextContent('2 igjen');
+    expect(screen.queryByText('Spm 1')).not.toBeInTheDocument();
+
+    fireEvent.scroll(screen.getByTestId('mobile-score-matrix-scroll'), {
+      target: { scrollLeft: 176 },
+    });
+
+    expect(
+      screen.getByText('Toppscorer etter gruppespill', {
+        selector: '[aria-live="polite"]',
+      })
+    ).toBeInTheDocument();
+
+    await userEvent.click(participantButton);
+
+    expect(
+      screen.getByText('#1 · 3/5 poeng · 2 mulige igjen')
+    ).toBeInTheDocument();
   });
 });
