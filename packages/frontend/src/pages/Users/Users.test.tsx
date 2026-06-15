@@ -565,7 +565,7 @@ describe('Users', () => {
     ).toBeInTheDocument();
     const participantButton = screen.getByRole('button', { name: /Anna/u });
     expect(participantButton).toBeInTheDocument();
-    expect(participantButton).toHaveTextContent('3 poeng');
+    expect(participantButton).toHaveTextContent('3p');
     expect(participantButton).not.toHaveTextContent('2 igjen');
     expect(screen.queryByText('Spm 1')).not.toBeInTheDocument();
 

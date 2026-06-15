@@ -36,8 +36,8 @@ import { QuestionSummary, getQuestionSummaries } from './questionSummaries';
 
 type QuestionFilter = 'all' | 'scored' | 'unscored';
 
-const MOBILE_PARTICIPANT_COLUMN_WIDTH = 128;
-const MOBILE_QUESTION_COLUMN_WIDTH = 196;
+const MOBILE_PARTICIPANT_COLUMN_WIDTH = 116;
+const MOBILE_QUESTION_COLUMN_WIDTH = 148;
 
 function normalizeSearchText(value: string): string {
   return value
@@ -139,14 +139,20 @@ function getQuestionGroups(questions: Question[]) {
   }, {});
 }
 
-function AnswerParts({ parts }: { parts: AnswerPart[] }) {
+function AnswerParts({
+  parts,
+  truncate = true,
+}: {
+  parts: AnswerPart[];
+  truncate?: boolean;
+}) {
   return (
     <Box
       component="span"
       sx={{
-        display: 'block',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
+        display: truncate ? 'block' : 'inline',
+        overflow: truncate ? 'hidden' : 'visible',
+        textOverflow: truncate ? 'ellipsis' : 'clip',
         whiteSpace: 'nowrap',
       }}
     >
@@ -170,16 +176,18 @@ function AnswerParts({ parts }: { parts: AnswerPart[] }) {
 function QuestionAnswer({
   question,
   showAnswerText,
+  truncateAnswerParts = true,
 }: {
   question: Question;
   showAnswerText: boolean;
+  truncateAnswerParts?: boolean;
 }) {
   const answerParts = showAnswerText
     ? getAnswerParts(question.answer, question.blueprint)
     : undefined;
   const content = showAnswerText ? (
     answerParts ? (
-      <AnswerParts parts={answerParts} />
+      <AnswerParts parts={answerParts} truncate={truncateAnswerParts} />
     ) : (
       question.answer || 'Tomt'
     )
@@ -260,7 +268,7 @@ function MobileScoreMatrix({
         <Typography
           variant="body2"
           aria-live="polite"
-          sx={{ fontWeight: 900, lineHeight: 1.35 }}
+          sx={{ fontSize: '0.8rem', fontWeight: 900, lineHeight: 1.28 }}
         >
           {activeQuestion?.question || 'Ingen spørsmål matcher filtreringen'}
         </Typography>
@@ -279,7 +287,7 @@ function MobileScoreMatrix({
             sx={{
               display: 'grid',
               gridTemplateColumns,
-              minHeight: 92,
+              minHeight: 44,
               borderBottom: '1px solid rgba(219, 234, 254, 0.14)',
             }}
           >
@@ -289,12 +297,13 @@ function MobileScoreMatrix({
                 position: 'sticky',
                 left: 0,
                 zIndex: 3,
-                p: 1,
+                p: 0.75,
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: '#091b34',
                 borderRight: '1px solid rgba(219, 234, 254, 0.14)',
                 boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
+                fontSize: '0.75rem',
                 fontWeight: 900,
               }}
             >
@@ -305,9 +314,9 @@ function MobileScoreMatrix({
                 role="columnheader"
                 key={question.question}
                 sx={{
-                  p: 1,
+                  p: 0.75,
                   display: 'flex',
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   justifyContent: 'flex-start',
                   gap: 0.25,
                   borderRight: '1px solid rgba(219, 234, 254, 0.1)',
@@ -315,11 +324,12 @@ function MobileScoreMatrix({
               >
                 <Typography
                   variant="body2"
+                  noWrap
                   sx={{
                     fontWeight: 900,
+                    fontSize: '0.72rem',
                     lineHeight: 1.25,
-                    overflowWrap: 'anywhere',
-                    whiteSpace: 'normal',
+                    minWidth: 0,
                   }}
                   title={question.question}
                 >
@@ -335,7 +345,7 @@ function MobileScoreMatrix({
               sx={{
                 display: 'grid',
                 gridTemplateColumns,
-                minHeight: 58,
+                minHeight: 44,
                 borderBottom: '1px solid rgba(219, 234, 254, 0.08)',
               }}
             >
@@ -345,7 +355,7 @@ function MobileScoreMatrix({
                   position: 'sticky',
                   left: 0,
                   zIndex: 2,
-                  p: 1,
+                  p: 0.5,
                   backgroundColor: '#091b34',
                   borderRight: '1px solid rgba(219, 234, 254, 0.14)',
                   boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
@@ -364,19 +374,42 @@ function MobileScoreMatrix({
                     },
                   }}
                 >
-                  <Stack spacing={0.25} sx={{ width: '100%', minWidth: 0 }}>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ fontWeight: 900 }}
+                  <Stack spacing={0.1} sx={{ width: '100%', minWidth: 0 }}>
+                    <Stack
+                      direction="row"
+                      spacing={0.5}
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        minWidth: 0,
+                      }}
                     >
-                      #{user.rank}
-                    </Typography>
-                    <Typography variant="body2" noWrap sx={{ fontWeight: 900 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: '0.68rem', fontWeight: 900 }}
+                      >
+                        #{user.rank}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        noWrap
+                        sx={{ fontSize: '0.68rem', fontWeight: 900 }}
+                      >
+                        {user.points}p
+                      </Typography>
+                    </Stack>
+                    <Typography
+                      variant="body2"
+                      noWrap
+                      sx={{
+                        fontSize: '0.78rem',
+                        fontWeight: 900,
+                        lineHeight: 1.2,
+                      }}
+                    >
                       {user.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {user.points} poeng
                     </Typography>
                   </Stack>
                 </ButtonBase>
@@ -391,38 +424,65 @@ function MobileScoreMatrix({
                     role="cell"
                     key={question.question}
                     sx={{
-                      p: 1,
+                      p: 0.5,
                       minWidth: 0,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      gap: 1,
+                      gap: 0.5,
                       borderRight: '1px solid rgba(219, 234, 254, 0.08)',
                     }}
                   >
                     {userQuestion ? (
                       <>
-                        <Typography
-                          variant="body2"
-                          noWrap
-                          sx={{ minWidth: 0, flex: 1 }}
+                        <Box
+                          data-testid="mobile-answer-scroll"
+                          sx={{
+                            minWidth: 0,
+                            flex: 1,
+                            display: 'block',
+                            overflowX: 'auto',
+                            overflowY: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            fontSize: '0.78rem',
+                            lineHeight: 1.2,
+                            WebkitOverflowScrolling: 'touch',
+                            scrollbarWidth: 'none',
+                            '&::-webkit-scrollbar': {
+                              display: 'none',
+                            },
+                          }}
                         >
                           <QuestionAnswer
                             question={userQuestion}
                             showAnswerText={showAnswerText}
+                            truncateAnswerParts={false}
                           />
-                        </Typography>
+                        </Box>
                         <Chip
                           label={`${userQuestion.points ?? 0}/${
                             userQuestion.max_points ?? 0
                           }`}
                           size="small"
                           color={getStatusColor(userQuestion.status)}
-                          sx={{ flex: '0 0 auto' }}
+                          sx={{
+                            flex: '0 0 auto',
+                            height: 22,
+                            fontSize: '0.68rem',
+                            fontWeight: 900,
+                            '& .MuiChip-label': {
+                              px: 0.75,
+                            },
+                          }}
                         />
                       </>
                     ) : (
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontSize: '0.78rem' }}
+                      >
                         Tomt
                       </Typography>
                     )}
