@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import ButtonBase from '@mui/material/ButtonBase';
 import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
@@ -11,6 +12,8 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import {
   DataGrid,
   GridColDef,
@@ -23,6 +26,7 @@ import { Container } from '../../components/Container';
 import { Loading } from '../../components/Loading';
 import {
   Question,
+  User,
   useGetUserQuery,
   useGetUsersQuery,
 } from '../../generated/queries';
@@ -31,6 +35,9 @@ import { AnswerPart, getAnswerParts } from './answerParts';
 import { QuestionSummary, getQuestionSummaries } from './questionSummaries';
 
 type QuestionFilter = 'all' | 'scored' | 'unscored';
+
+const MOBILE_PARTICIPANT_COLUMN_WIDTH = 128;
+const MOBILE_QUESTION_COLUMN_WIDTH = 196;
 
 function normalizeSearchText(value: string): string {
   return value
@@ -160,6 +167,276 @@ function AnswerParts({ parts }: { parts: AnswerPart[] }) {
   );
 }
 
+function QuestionAnswer({
+  question,
+  showAnswerText,
+}: {
+  question: Question;
+  showAnswerText: boolean;
+}) {
+  const answerParts = showAnswerText
+    ? getAnswerParts(question.answer, question.blueprint)
+    : undefined;
+  const content = showAnswerText ? (
+    answerParts ? (
+      <AnswerParts parts={answerParts} />
+    ) : (
+      question.answer || 'Tomt'
+    )
+  ) : (
+    `${question.points ?? 0}/${question.max_points ?? 0}`
+  );
+
+  return answerParts ? (
+    content
+  ) : (
+    <Box component="span" sx={{ color: getCellColor(question) }}>
+      {content}
+    </Box>
+  );
+}
+
+function MobileScoreMatrix({
+  users,
+  questions,
+  showAnswerText,
+  onSelectUser,
+}: {
+  users: User[];
+  questions: Question[];
+  showAnswerText: boolean;
+  onSelectUser: (userId: string) => void;
+}) {
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const activeQuestion = questions[activeQuestionIndex];
+  const gridTemplateColumns = `${MOBILE_PARTICIPANT_COLUMN_WIDTH}px repeat(${questions.length}, ${MOBILE_QUESTION_COLUMN_WIDTH}px)`;
+  const matrixWidth =
+    MOBILE_PARTICIPANT_COLUMN_WIDTH +
+    questions.length * MOBILE_QUESTION_COLUMN_WIDTH;
+
+  useEffect(() => {
+    if (activeQuestionIndex >= questions.length) {
+      setActiveQuestionIndex(Math.max(questions.length - 1, 0));
+    }
+  }, [activeQuestionIndex, questions.length]);
+
+  function handleHorizontalScroll(event: React.UIEvent<HTMLDivElement>) {
+    if (!questions.length) {
+      return;
+    }
+
+    const nextQuestionIndex = Math.min(
+      questions.length - 1,
+      Math.max(
+        0,
+        Math.round(
+          event.currentTarget.scrollLeft / MOBILE_QUESTION_COLUMN_WIDTH
+        )
+      )
+    );
+
+    setActiveQuestionIndex(nextQuestionIndex);
+  }
+
+  return (
+    <Paper
+      variant="outlined"
+      data-testid="mobile-score-matrix"
+      sx={{
+        borderRadius: '8px',
+        overflow: 'hidden',
+        background:
+          'linear-gradient(145deg, rgba(13, 25, 48, 0.76), rgba(6, 16, 31, 0.56))',
+      }}
+    >
+      <Box
+        sx={{
+          p: 1.25,
+          borderBottom: '1px solid rgba(219, 234, 254, 0.12)',
+          background:
+            'linear-gradient(90deg, rgba(0, 212, 255, 0.16), rgba(255, 61, 127, 0.1))',
+        }}
+      >
+        <Typography
+          variant="body2"
+          aria-live="polite"
+          sx={{ fontWeight: 900, lineHeight: 1.35 }}
+        >
+          {activeQuestion?.question || 'Ingen spørsmål matcher filtreringen'}
+        </Typography>
+      </Box>
+      <Box
+        data-testid="mobile-score-matrix-scroll"
+        onScroll={handleHorizontalScroll}
+        sx={{
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        <Box role="table" sx={{ minWidth: matrixWidth }}>
+          <Box
+            role="row"
+            sx={{
+              display: 'grid',
+              gridTemplateColumns,
+              minHeight: 92,
+              borderBottom: '1px solid rgba(219, 234, 254, 0.14)',
+            }}
+          >
+            <Box
+              role="columnheader"
+              sx={{
+                position: 'sticky',
+                left: 0,
+                zIndex: 3,
+                p: 1,
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#091b34',
+                borderRight: '1px solid rgba(219, 234, 254, 0.14)',
+                boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
+                fontWeight: 900,
+              }}
+            >
+              Deltaker
+            </Box>
+            {questions.map((question) => (
+              <Box
+                role="columnheader"
+                key={question.question}
+                sx={{
+                  p: 1,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  gap: 0.25,
+                  borderRight: '1px solid rgba(219, 234, 254, 0.1)',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 900,
+                    lineHeight: 1.25,
+                    overflowWrap: 'anywhere',
+                    whiteSpace: 'normal',
+                  }}
+                  title={question.question}
+                >
+                  {question.question}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+          {users.map((user) => (
+            <Box
+              role="row"
+              key={user.id}
+              sx={{
+                display: 'grid',
+                gridTemplateColumns,
+                minHeight: 58,
+                borderBottom: '1px solid rgba(219, 234, 254, 0.08)',
+              }}
+            >
+              <Box
+                role="cell"
+                sx={{
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 2,
+                  p: 1,
+                  backgroundColor: '#091b34',
+                  borderRight: '1px solid rgba(219, 234, 254, 0.14)',
+                  boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
+                }}
+              >
+                <ButtonBase
+                  onClick={() => onSelectUser(user.id)}
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'stretch',
+                    textAlign: 'left',
+                    borderRadius: '6px',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 212, 255, 0.12)',
+                    },
+                  }}
+                >
+                  <Stack spacing={0.25} sx={{ width: '100%', minWidth: 0 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 900 }}
+                    >
+                      #{user.rank}
+                    </Typography>
+                    <Typography variant="body2" noWrap sx={{ fontWeight: 900 }}>
+                      {user.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {user.points} poeng
+                    </Typography>
+                  </Stack>
+                </ButtonBase>
+              </Box>
+              {questions.map((question) => {
+                const userQuestion = user.questions?.find(
+                  (candidate) => candidate.question === question.question
+                );
+
+                return (
+                  <Box
+                    role="cell"
+                    key={question.question}
+                    sx={{
+                      p: 1,
+                      minWidth: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1,
+                      borderRight: '1px solid rgba(219, 234, 254, 0.08)',
+                    }}
+                  >
+                    {userQuestion ? (
+                      <>
+                        <Typography
+                          variant="body2"
+                          noWrap
+                          sx={{ minWidth: 0, flex: 1 }}
+                        >
+                          <QuestionAnswer
+                            question={userQuestion}
+                            showAnswerText={showAnswerText}
+                          />
+                        </Typography>
+                        <Chip
+                          label={`${userQuestion.points ?? 0}/${
+                            userQuestion.max_points ?? 0
+                          }`}
+                          size="small"
+                          color={getStatusColor(userQuestion.status)}
+                          sx={{ flex: '0 0 auto' }}
+                        />
+                      </>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        Tomt
+                      </Typography>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </Paper>
+  );
+}
+
 function Metric({
   label,
   value,
@@ -225,9 +502,14 @@ function Metric({
 
 function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
   const decisiveQuestions = [...summaries]
-    .filter((summary) => summary.spread > 0)
-    .sort((a, b) => b.spread - a.spread)
-    .slice(0, 5);
+    .filter((summary) => summary.hasBlueprint)
+    .sort((a, b) => {
+      if (b.spread === a.spread) {
+        return a.question.localeCompare(b.question);
+      }
+
+      return b.spread - a.spread;
+    });
 
   return (
     <Paper
@@ -242,7 +524,14 @@ function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
           Mest utslagsgivende
         </Typography>
       </Stack>
-      <Stack spacing={1}>
+      <Stack
+        spacing={1}
+        sx={{
+          maxHeight: { xs: 190, md: 260 },
+          overflowY: 'auto',
+          pr: 0.5,
+        }}
+      >
         {decisiveQuestions.length ? (
           decisiveQuestions.map((summary) => (
             <Box
@@ -422,6 +711,8 @@ function UserDetailsDrawer({
 }
 
 export function Users() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { error, loading, data, refetch } = useGetUsersQuery({
     notifyOnNetworkStatusChange: true,
   });
@@ -524,18 +815,6 @@ export function Users() {
       width: getWidth(question.question),
       renderCell: (params: GridRenderCellParams) => {
         const cellQuestion = params.value as Question;
-        const answerParts = showAnswerText
-          ? getAnswerParts(cellQuestion.answer, cellQuestion.blueprint)
-          : undefined;
-        const content = showAnswerText ? (
-          answerParts ? (
-            <AnswerParts parts={answerParts} />
-          ) : (
-            cellQuestion.answer || 'Tomt'
-          )
-        ) : (
-          `${cellQuestion.points ?? 0}/${cellQuestion.max_points ?? 0}`
-        );
 
         return (
           <Stack
@@ -543,13 +822,10 @@ export function Users() {
             spacing={1}
             sx={{ alignItems: 'center', height: '100%', minWidth: 0 }}
           >
-            {answerParts ? (
-              content
-            ) : (
-              <Box component="span" sx={{ color: getCellColor(cellQuestion) }}>
-                {content}
-              </Box>
-            )}
+            <QuestionAnswer
+              question={cellQuestion}
+              showAnswerText={showAnswerText}
+            />
           </Stack>
         );
       },
@@ -707,69 +983,82 @@ export function Users() {
           </Stack>
         </Paper>
         <Box id="resultattabell">
-          <DataGrid
-            autoHeight
-            rows={rows}
-            rowHeight={44}
-            columns={columns}
-            hideFooter
-            disableRowSelectionOnClick
-            onRowClick={(params: GridRowParams) =>
-              setSelectedUserId(String(params.id))
-            }
-            sx={{
-              border: '1px solid rgba(219, 234, 254, 0.16)',
-              borderRadius: '8px',
-              overflow: 'hidden',
-              background:
-                'linear-gradient(145deg, rgba(13, 25, 48, 0.72), rgba(6, 16, 31, 0.52))',
-              backdropFilter: 'blur(18px)',
-              '& .MuiDataGrid-main': {
+          {isMobile ? (
+            <MobileScoreMatrix
+              users={filteredUsers}
+              questions={visibleQuestions}
+              showAnswerText={showAnswerText}
+              onSelectUser={(userId) => setSelectedUserId(userId)}
+            />
+          ) : (
+            <DataGrid
+              autoHeight
+              disableVirtualization
+              rows={rows}
+              rowHeight={44}
+              columns={columns}
+              hideFooter
+              disableRowSelectionOnClick
+              onRowClick={(params: GridRowParams) =>
+                setSelectedUserId(String(params.id))
+              }
+              sx={{
+                border: '1px solid rgba(219, 234, 254, 0.16)',
                 borderRadius: '8px',
-              },
-              '& .MuiDataGrid-cell': {
-                alignItems: 'center',
-                borderColor: 'rgba(219, 234, 254, 0.08)',
-              },
-              '& .MuiDataGrid-columnHeaders': {
+                overflow: 'hidden',
                 background:
-                  'linear-gradient(90deg, rgba(0, 212, 255, 0.18), rgba(255, 61, 127, 0.12))',
-                borderColor: 'rgba(219, 234, 254, 0.14)',
-              },
-              '& .MuiDataGrid-columnHeaderTitle': {
-                fontWeight: 900,
-              },
-              '& .MuiDataGrid-row:hover': {
-                backgroundColor: 'rgba(0, 212, 255, 0.08)',
-                cursor: 'pointer',
-              },
-              '& .sticky-rank': {
-                position: 'sticky',
-                left: 0,
-                zIndex: 2,
-                backgroundColor: 'rgba(9, 27, 52, 0.94)',
+                  'linear-gradient(145deg, rgba(13, 25, 48, 0.72), rgba(6, 16, 31, 0.52))',
                 backdropFilter: 'blur(18px)',
-              },
-              '& .sticky-name': {
-                position: 'sticky',
-                left: 72,
-                zIndex: 2,
-                backgroundColor: 'rgba(9, 27, 52, 0.94)',
-                backdropFilter: 'blur(18px)',
-              },
-              '& .sticky-points': {
-                position: 'sticky',
-                left: 252,
-                zIndex: 2,
-                backgroundColor: 'rgba(9, 27, 52, 0.94)',
-                backdropFilter: 'blur(18px)',
-              },
-              '& .MuiDataGrid-columnHeader.sticky-rank, & .MuiDataGrid-columnHeader.sticky-name, & .MuiDataGrid-columnHeader.sticky-points':
-                {
-                  zIndex: 3,
+                '& .MuiDataGrid-main': {
+                  borderRadius: '8px',
                 },
-            }}
-          />
+                '& .MuiDataGrid-cell': {
+                  alignItems: 'center',
+                  borderColor: 'rgba(219, 234, 254, 0.08)',
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  background:
+                    'linear-gradient(90deg, rgba(0, 212, 255, 0.18), rgba(255, 61, 127, 0.12))',
+                  borderColor: 'rgba(219, 234, 254, 0.14)',
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  fontWeight: 900,
+                },
+                '& .MuiDataGrid-row:hover': {
+                  backgroundColor: 'rgba(0, 212, 255, 0.08)',
+                  cursor: 'pointer',
+                },
+                '& .sticky-rank': {
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 10,
+                  backgroundColor: '#091b34',
+                  backdropFilter: 'blur(18px)',
+                  boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
+                },
+                '& .sticky-name': {
+                  position: 'sticky',
+                  left: 72,
+                  zIndex: 10,
+                  backgroundColor: '#091b34',
+                  backdropFilter: 'blur(18px)',
+                  boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
+                },
+                '& .sticky-points': {
+                  position: 'sticky',
+                  left: 252,
+                  zIndex: 10,
+                  backgroundColor: '#091b34',
+                  backdropFilter: 'blur(18px)',
+                  boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
+                },
+                '& .MuiDataGrid-columnHeader.sticky-rank, & .MuiDataGrid-columnHeader.sticky-name, & .MuiDataGrid-columnHeader.sticky-points':
+                  {
+                    zIndex: 11,
+                  },
+              }}
+            />
+          )}
         </Box>
       </Stack>
       <UserDetailsDrawer

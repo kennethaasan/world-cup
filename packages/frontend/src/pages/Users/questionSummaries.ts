@@ -3,6 +3,7 @@ import { Question, User } from '../../generated/queries';
 export type QuestionSummary = {
   question: string;
   category: Question['category'];
+  hasBlueprint: boolean;
   correct: number;
   partial: number;
   wrong: number;
@@ -17,6 +18,9 @@ export function getQuestionSummaries(users: User[]): QuestionSummary[] {
     const summary: QuestionSummary = {
       question: question.question,
       category: question.category,
+      hasBlueprint: users.some((user) =>
+        Boolean(user.questions?.[index]?.blueprint)
+      ),
       correct: 0,
       partial: 0,
       wrong: 0,
