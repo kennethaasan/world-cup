@@ -414,6 +414,26 @@ describe('Users', () => {
     ]);
   });
 
+  test('filters question columns by match or question search text', async () => {
+    render(<Users />);
+
+    expect(
+      latestDataGridProps.current?.columns.map((column) => column.field)
+    ).toContain('Mexico - Sør-Afrika');
+    expect(
+      latestDataGridProps.current?.columns.map((column) => column.field)
+    ).toContain('Toppscorer etter gruppespill');
+
+    await userEvent.type(screen.getByLabelText('Søk kamp/spørsmål'), 'sor');
+
+    expect(
+      latestDataGridProps.current?.columns.map((column) => column.field)
+    ).toContain('Mexico - Sør-Afrika');
+    expect(
+      latestDataGridProps.current?.columns.map((column) => column.field)
+    ).not.toContain('Toppscorer etter gruppespill');
+  });
+
   test('toggles question cells between answers and points', async () => {
     render(<Users />);
 
