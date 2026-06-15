@@ -88,9 +88,13 @@ test('renders the World Cup 2026 dashboard and captures a UI snapshot', async ({
   await expect(page.getByText('2026-modus aktivert')).toBeVisible();
   await expect(page.getByText('Anna')).toBeVisible();
 
+  await expect(page).toHaveScreenshot('world-cup-2026-dashboard.png', {
+    animations: 'disabled',
+    maxDiffPixels: 1_440_000,
+  });
+
   await page.screenshot({
     animations: 'disabled',
-    fullPage: true,
     path: testInfo.outputPath('world-cup-2026-dashboard.png'),
   });
 });
@@ -104,11 +108,15 @@ test('captures the participant drawer design', async ({ page }, testInfo) => {
   await expect(
     page.getByText('#1 · 8/12 poeng · 4 mulige igjen')
   ).toBeVisible();
-  await expect(page.getByText('Kamper')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Kamper' })).toBeVisible();
+
+  await expect(page).toHaveScreenshot('world-cup-2026-drawer.png', {
+    animations: 'disabled',
+    maxDiffPixels: 1_440_000,
+  });
 
   await page.screenshot({
     animations: 'disabled',
-    fullPage: true,
     path: testInfo.outputPath('world-cup-2026-drawer.png'),
   });
 });

@@ -14,8 +14,10 @@ export default defineConfig({
         ['list'],
         ['html', { open: 'never', outputFolder: 'playwright-report' }],
       ],
+  snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
   use: {
     baseURL: 'http://127.0.0.1:5173',
+    viewport: { width: 1440, height: 1000 },
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -31,7 +33,10 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 1000 },
+      },
     },
   ],
 });
