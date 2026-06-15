@@ -259,7 +259,7 @@ function MobileScoreMatrix({
     >
       <Box
         sx={{
-          p: 1.25,
+          p: 1,
           borderBottom: '1px solid rgba(219, 234, 254, 0.12)',
           background:
             'linear-gradient(90deg, rgba(0, 212, 255, 0.16), rgba(255, 61, 127, 0.1))',
@@ -268,7 +268,7 @@ function MobileScoreMatrix({
         <Typography
           variant="body2"
           aria-live="polite"
-          sx={{ fontSize: '0.8rem', fontWeight: 900, lineHeight: 1.28 }}
+          sx={{ fontSize: 12, fontWeight: 900, lineHeight: '16px' }}
         >
           {activeQuestion?.question || 'Ingen spørsmål matcher filtreringen'}
         </Typography>
@@ -287,7 +287,7 @@ function MobileScoreMatrix({
             sx={{
               display: 'grid',
               gridTemplateColumns,
-              minHeight: 44,
+              height: 44,
               borderBottom: '1px solid rgba(219, 234, 254, 0.14)',
             }}
           >
@@ -303,7 +303,7 @@ function MobileScoreMatrix({
                 backgroundColor: '#091b34',
                 borderRight: '1px solid rgba(219, 234, 254, 0.14)',
                 boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
-                fontSize: '0.75rem',
+                fontSize: 12,
                 fontWeight: 900,
               }}
             >
@@ -327,8 +327,8 @@ function MobileScoreMatrix({
                   noWrap
                   sx={{
                     fontWeight: 900,
-                    fontSize: '0.72rem',
-                    lineHeight: 1.25,
+                    fontSize: 11,
+                    lineHeight: '14px',
                     minWidth: 0,
                   }}
                   title={question.question}
@@ -345,7 +345,7 @@ function MobileScoreMatrix({
               sx={{
                 display: 'grid',
                 gridTemplateColumns,
-                minHeight: 44,
+                height: 44,
                 borderBottom: '1px solid rgba(219, 234, 254, 0.08)',
               }}
             >
@@ -387,7 +387,11 @@ function MobileScoreMatrix({
                       <Typography
                         variant="caption"
                         color="text.secondary"
-                        sx={{ fontSize: '0.68rem', fontWeight: 900 }}
+                        sx={{
+                          fontSize: 11,
+                          fontWeight: 900,
+                          lineHeight: '14px',
+                        }}
                       >
                         #{user.rank}
                       </Typography>
@@ -395,7 +399,11 @@ function MobileScoreMatrix({
                         variant="caption"
                         color="text.secondary"
                         noWrap
-                        sx={{ fontSize: '0.68rem', fontWeight: 900 }}
+                        sx={{
+                          fontSize: 11,
+                          fontWeight: 900,
+                          lineHeight: '14px',
+                        }}
                       >
                         {user.points}p
                       </Typography>
@@ -404,9 +412,9 @@ function MobileScoreMatrix({
                       variant="body2"
                       noWrap
                       sx={{
-                        fontSize: '0.78rem',
+                        fontSize: 12,
                         fontWeight: 900,
-                        lineHeight: 1.2,
+                        lineHeight: '15px',
                       }}
                     >
                       {user.name}
@@ -445,8 +453,8 @@ function MobileScoreMatrix({
                             overflowY: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
-                            fontSize: '0.78rem',
-                            lineHeight: 1.2,
+                            fontSize: 12,
+                            lineHeight: '15px',
                             WebkitOverflowScrolling: 'touch',
                             scrollbarWidth: 'none',
                             '&::-webkit-scrollbar': {
@@ -469,7 +477,7 @@ function MobileScoreMatrix({
                           sx={{
                             flex: '0 0 auto',
                             height: 22,
-                            fontSize: '0.68rem',
+                            fontSize: 11,
                             fontWeight: 900,
                             '& .MuiChip-label': {
                               px: 0.75,
@@ -481,7 +489,7 @@ function MobileScoreMatrix({
                       <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ fontSize: '0.78rem' }}
+                        sx={{ fontSize: 12, lineHeight: '15px' }}
                       >
                         Tomt
                       </Typography>
