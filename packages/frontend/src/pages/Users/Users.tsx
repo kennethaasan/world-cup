@@ -32,6 +32,18 @@ import { QuestionSummary, getQuestionSummaries } from './questionSummaries';
 
 type QuestionFilter = 'all' | 'scored' | 'unscored';
 
+function normalizeSearchText(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[æ]/gi, 'ae')
+    .replace(/[ø]/gi, 'o')
+    .replace(/[å]/gi, 'a')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
 const CATEGORY_LABELS: Record<string, string> = {
   MATCHES: 'Kamper',
   KNOCKOUT: 'Sluttspill',
@@ -354,6 +366,7 @@ export function Users() {
     notifyOnNetworkStatusChange: true,
   });
   const [search, setSearch] = useState('');
+  const [questionSearch, setQuestionSearch] = useState('');
   const [questionFilter, setQuestionFilter] = useState<QuestionFilter>('all');
   const [showAnswerText, setShowAnswerText] = useState(true);
   const [selectedUserId, setSelectedUserId] = useState<string | undefined>();
@@ -373,18 +386,29 @@ export function Users() {
   ).length;
   const remainingPossiblePoints = users[0]?.remaining_possible_points || 0;
   const filteredUsers = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch = normalizeSearchText(search);
 
     if (!normalizedSearch) {
       return users;
     }
 
     return users.filter((user) =>
-      user.name.toLowerCase().includes(normalizedSearch)
+      normalizeSearchText(user.name).includes(normalizedSearch)
     );
   }, [search, users]);
   const visibleQuestions = useMemo(() => {
+    const normalizedQuestionSearch = normalizeSearchText(questionSearch);
+
     return questions.filter((question) => {
+      if (
+        normalizedQuestionSearch &&
+        !normalizeSearchText(question.question).includes(
+          normalizedQuestionSearch
+        )
+      ) {
+        return false;
+      }
+
       if (questionFilter === 'scored') {
         return question.status !== 'UNSCORED';
       }
@@ -395,7 +419,7 @@ export function Users() {
 
       return true;
     });
-  }, [questionFilter, questions]);
+  }, [questionFilter, questionSearch, questions]);
 
   if (error) {
     console.error(error);
@@ -533,7 +557,14 @@ export function Users() {
               sx={{ minWidth: { md: 260 } }}
             />
             <TextField
-              label="Spørsmål"
+              label="Søk kamp/spørsmål"
+              value={questionSearch}
+              onChange={(event) => setQuestionSearch(event.target.value)}
+              size="small"
+              sx={{ minWidth: { md: 260 } }}
+            />
+            <TextField
+              label="Status"
               select
               value={questionFilter}
               onChange={(event) =>
