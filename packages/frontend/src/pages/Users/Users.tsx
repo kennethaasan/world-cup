@@ -32,12 +32,17 @@ import {
 } from '../../generated/queries';
 import { ErrorPage } from '../ErrorPage';
 import { AnswerPart, getAnswerParts } from './answerParts';
-import { QuestionSummary, getQuestionSummaries } from './questionSummaries';
+import {
+  QuestionSummary,
+  getDecisiveQuestionSummaries,
+  getQuestionSummaries,
+} from './questionSummaries';
 
 type QuestionFilter = 'all' | 'scored' | 'unscored';
 
-const MOBILE_PARTICIPANT_COLUMN_WIDTH = 116;
-const MOBILE_QUESTION_COLUMN_WIDTH = 148;
+const MOBILE_PARTICIPANT_COLUMN_WIDTH = 124;
+const MOBILE_MATCH_QUESTION_COLUMN_WIDTH = 124;
+const MOBILE_LONG_QUESTION_COLUMN_WIDTH = 216;
 
 function normalizeSearchText(value: string): string {
   return value
@@ -114,6 +119,25 @@ function getCellColor(question: Question): string {
   }
 
   return 'text.disabled';
+}
+
+function isLongNonMatchQuestion(question: Question): boolean {
+  return (
+    question.category !== 'MATCHES' &&
+    ((question.max_points ?? 0) > 4 ||
+      question.question.length > 28 ||
+      question.answer.length > 18)
+  );
+}
+
+function getMobileQuestionWidth(question: Question): number {
+  return isLongNonMatchQuestion(question)
+    ? MOBILE_LONG_QUESTION_COLUMN_WIDTH
+    : MOBILE_MATCH_QUESTION_COLUMN_WIDTH;
+}
+
+function formatImpact(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
 
 function getCategoryLabel(category: Question['category']): string {
@@ -217,10 +241,16 @@ function MobileScoreMatrix({
 }) {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const activeQuestion = questions[activeQuestionIndex];
-  const gridTemplateColumns = `${MOBILE_PARTICIPANT_COLUMN_WIDTH}px repeat(${questions.length}, ${MOBILE_QUESTION_COLUMN_WIDTH}px)`;
+  const questionColumnWidths = useMemo(
+    () => questions.map(getMobileQuestionWidth),
+    [questions]
+  );
+  const gridTemplateColumns = `${MOBILE_PARTICIPANT_COLUMN_WIDTH}px ${questionColumnWidths
+    .map((width) => `${width}px`)
+    .join(' ')}`;
   const matrixWidth =
     MOBILE_PARTICIPANT_COLUMN_WIDTH +
-    questions.length * MOBILE_QUESTION_COLUMN_WIDTH;
+    questionColumnWidths.reduce((total, width) => total + width, 0);
 
   useEffect(() => {
     if (activeQuestionIndex >= questions.length) {
@@ -233,15 +263,21 @@ function MobileScoreMatrix({
       return;
     }
 
-    const nextQuestionIndex = Math.min(
-      questions.length - 1,
-      Math.max(
-        0,
-        Math.round(
-          event.currentTarget.scrollLeft / MOBILE_QUESTION_COLUMN_WIDTH
-        )
-      )
-    );
+    const scrollLeft = event.currentTarget.scrollLeft;
+    let nextQuestionIndex = 0;
+    let accumulatedWidth = 0;
+
+    for (let index = 0; index < questionColumnWidths.length; index += 1) {
+      const width = questionColumnWidths[index];
+
+      if (scrollLeft < accumulatedWidth + width / 2) {
+        nextQuestionIndex = index;
+        break;
+      }
+
+      nextQuestionIndex = index;
+      accumulatedWidth += width;
+    }
 
     setActiveQuestionIndex(nextQuestionIndex);
   }
@@ -303,8 +339,8 @@ function MobileScoreMatrix({
                 backgroundColor: '#091b34',
                 borderRight: '1px solid rgba(219, 234, 254, 0.14)',
                 boxShadow: '10px 0 18px rgba(2, 6, 23, 0.22)',
-                fontSize: 12,
-                fontWeight: 900,
+                fontSize: 11,
+                fontWeight: 800,
               }}
             >
               Deltaker
@@ -388,8 +424,8 @@ function MobileScoreMatrix({
                         variant="caption"
                         color="text.secondary"
                         sx={{
-                          fontSize: 11,
-                          fontWeight: 900,
+                          fontSize: 10,
+                          fontWeight: 700,
                           lineHeight: '14px',
                         }}
                       >
@@ -400,8 +436,8 @@ function MobileScoreMatrix({
                         color="text.secondary"
                         noWrap
                         sx={{
-                          fontSize: 11,
-                          fontWeight: 900,
+                          fontSize: 10,
+                          fontWeight: 700,
                           lineHeight: '14px',
                         }}
                       >
@@ -412,8 +448,8 @@ function MobileScoreMatrix({
                       variant="body2"
                       noWrap
                       sx={{
-                        fontSize: 12,
-                        fontWeight: 900,
+                        fontSize: 11,
+                        fontWeight: 700,
                         lineHeight: '15px',
                       }}
                     >
@@ -426,6 +462,9 @@ function MobileScoreMatrix({
                 const userQuestion = user.questions?.find(
                   (candidate) => candidate.question === question.question
                 );
+                const showScoreChip = userQuestion
+                  ? showAnswerText && isLongNonMatchQuestion(userQuestion)
+                  : false;
 
                 return (
                   <Box
@@ -469,22 +508,24 @@ function MobileScoreMatrix({
                             truncateAnswerParts={false}
                           />
                         </Box>
-                        <Chip
-                          label={`${userQuestion.points ?? 0}/${
-                            userQuestion.max_points ?? 0
-                          }`}
-                          size="small"
-                          color={getStatusColor(userQuestion.status)}
-                          sx={{
-                            flex: '0 0 auto',
-                            height: 22,
-                            fontSize: 11,
-                            fontWeight: 900,
-                            '& .MuiChip-label': {
-                              px: 0.75,
-                            },
-                          }}
-                        />
+                        {showScoreChip ? (
+                          <Chip
+                            label={`${userQuestion.points ?? 0}/${
+                              userQuestion.max_points ?? 0
+                            }`}
+                            size="small"
+                            color={getStatusColor(userQuestion.status)}
+                            sx={{
+                              flex: '0 0 auto',
+                              height: 22,
+                              fontSize: 11,
+                              fontWeight: 800,
+                              '& .MuiChip-label': {
+                                px: 0.75,
+                              },
+                            }}
+                          />
+                        ) : null}
                       </>
                     ) : (
                       <Typography
@@ -570,15 +611,7 @@ function Metric({
 }
 
 function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
-  const decisiveQuestions = [...summaries]
-    .filter((summary) => summary.hasBlueprint)
-    .sort((a, b) => {
-      if (b.spread === a.spread) {
-        return a.question.localeCompare(b.question);
-      }
-
-      return b.spread - a.spread;
-    });
+  const decisiveQuestions = getDecisiveQuestionSummaries(summaries);
 
   return (
     <Paper
@@ -614,7 +647,7 @@ function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
                 whiteSpace: 'nowrap',
               }}
             >
-              <Chip label={`+${summary.spread}`} size="small" />
+              <Chip label={`Δ${formatImpact(summary.impact)}`} size="small" />
               <Typography
                 variant="body2"
                 noWrap
@@ -671,7 +704,7 @@ function QuestionSummaries({ summaries }: { summaries: QuestionSummary[] }) {
           ))
         ) : (
           <Typography variant="body2" color="text.secondary">
-            Ingen avgjorte spørsmål ennå
+            Ingen utslagsgivende spørsmål ennå
           </Typography>
         )}
       </Stack>
@@ -948,51 +981,6 @@ export function Users() {
             tone="gold"
           />
         </Box>
-        <Paper
-          variant="outlined"
-          sx={{
-            p: { xs: 1.5, md: 2 },
-            borderRadius: '8px',
-            background:
-              'linear-gradient(110deg, rgba(0, 212, 255, 0.16), rgba(255, 61, 127, 0.12), rgba(53, 242, 163, 0.12))',
-          }}
-        >
-          <Stack
-            direction={{ xs: 'column', md: 'row' }}
-            spacing={1.5}
-            sx={{ alignItems: { xs: 'stretch', md: 'center' } }}
-          >
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ alignItems: 'center', flex: 1 }}
-            >
-              <Box
-                component="span"
-                sx={{ color: 'primary.main', fontSize: 22 }}
-              >
-                🏟️
-              </Box>
-              <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 900 }}>
-                  2026-modus aktivert
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Klikk på en deltaker for detaljer, eller filtrer spørsmålene
-                  før avspark.
-                </Typography>
-              </Box>
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ flexWrap: 'wrap', gap: 1 }}
-            >
-              <Chip label="🌎 48 lag" variant="outlined" />
-              <Chip label="🏆 104 kamper" color="secondary" />
-            </Stack>
-          </Stack>
-        </Paper>
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
           <Button href="#resultattabell" variant="contained" fullWidth>
             Gå til tabell

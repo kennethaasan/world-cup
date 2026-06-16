@@ -4,7 +4,10 @@ import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { User } from '../../generated/queries';
 import { Users } from './Users';
-import { getQuestionSummaries } from './questionSummaries';
+import {
+  getDecisiveQuestionSummaries,
+  getQuestionSummaries,
+} from './questionSummaries';
 
 const refetchMock = vi.hoisted(() => vi.fn());
 const isMobileViewport = vi.hoisted(() => ({ current: false }));
@@ -452,6 +455,7 @@ describe('getQuestionSummaries', () => {
         wrong: 0,
         unscored: 0,
         spread: 1,
+        impact: 1,
       },
       {
         question: 'Toppscorer etter gruppespill',
@@ -462,7 +466,51 @@ describe('getQuestionSummaries', () => {
         wrong: 0,
         unscored: 2,
         spread: 0,
+        impact: 0,
       },
+    ]);
+  });
+
+  test('sorts decisive questions by total point impact', () => {
+    expect(
+      getDecisiveQuestionSummaries([
+        {
+          question: 'Low spread, more participants affected',
+          category: 'MATCHES',
+          hasBlueprint: true,
+          correct: 0,
+          partial: 12,
+          wrong: 12,
+          unscored: 0,
+          spread: 1,
+          impact: 12,
+        },
+        {
+          question: 'High spread, fewer participants affected',
+          category: 'MATCHES',
+          hasBlueprint: true,
+          correct: 1,
+          partial: 0,
+          wrong: 23,
+          unscored: 0,
+          spread: 2,
+          impact: 4,
+        },
+        {
+          question: 'No blueprint',
+          category: 'AWARDS',
+          hasBlueprint: false,
+          correct: 0,
+          partial: 0,
+          wrong: 0,
+          unscored: 24,
+          spread: 0,
+          impact: 0,
+        },
+      ]).map((summary) => summary.question)
+    ).toEqual([
+      'Low spread, more participants affected',
+      'High spread, fewer participants affected',
     ]);
   });
 });
@@ -545,6 +593,7 @@ describe('Users', () => {
     render(<Users />);
 
     expect(screen.getByText('Mest utslagsgivende')).toBeInTheDocument();
+    expect(screen.getByText('Δ1')).toBeInTheDocument();
     expect(screen.getAllByText('Mexico - Sør-Afrika').length).toBeGreaterThan(
       1
     );
@@ -567,6 +616,7 @@ describe('Users', () => {
     expect(participantButton).toBeInTheDocument();
     expect(participantButton).toHaveTextContent('3p');
     expect(participantButton).not.toHaveTextContent('2 igjen');
+    expect(screen.queryByText('2/2')).not.toBeInTheDocument();
     expect(screen.queryByText('Spm 1')).not.toBeInTheDocument();
 
     fireEvent.scroll(screen.getByTestId('mobile-score-matrix-scroll'), {

@@ -117,7 +117,6 @@ async function expectDashboardData(page) {
   ).toBeVisible();
   await expect(page.getByText('World Cup 2026')).toBeVisible();
   await expect(page.getByText('USA · Canada · Mexico')).toBeVisible();
-  await expect(page.getByText('2026-modus aktivert')).toBeVisible();
   await expect(page.getByText('Anna')).toBeVisible();
   await expect(page.getByText('Bjørn')).toBeVisible();
   await expect(

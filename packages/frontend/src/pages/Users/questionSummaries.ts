@@ -9,6 +9,7 @@ export type QuestionSummary = {
   wrong: number;
   unscored: number;
   spread: number;
+  impact: number;
 };
 
 export function getQuestionSummaries(users: User[]): QuestionSummary[] {
@@ -26,9 +27,11 @@ export function getQuestionSummaries(users: User[]): QuestionSummary[] {
       wrong: 0,
       unscored: 0,
       spread: 0,
+      impact: 0,
     };
     let minPoints: number | undefined;
     let maxPoints: number | undefined;
+    const scoredPoints: number[] = [];
 
     users.forEach((user) => {
       const userQuestion = user.questions?.[index];
@@ -51,6 +54,7 @@ export function getQuestionSummaries(users: User[]): QuestionSummary[] {
         userQuestion.status !== 'UNSCORED' &&
         typeof userQuestion.points === 'number'
       ) {
+        scoredPoints.push(userQuestion.points);
         minPoints =
           minPoints === undefined
             ? userQuestion.points
@@ -66,7 +70,35 @@ export function getQuestionSummaries(users: User[]): QuestionSummary[] {
       minPoints === undefined || maxPoints === undefined
         ? 0
         : maxPoints - minPoints;
+    if (scoredPoints.length) {
+      const average =
+        scoredPoints.reduce((total, points) => total + points, 0) /
+        scoredPoints.length;
+
+      summary.impact = scoredPoints.reduce(
+        (total, points) => total + Math.abs(points - average),
+        0
+      );
+    }
 
     return summary;
   });
+}
+
+export function getDecisiveQuestionSummaries(
+  summaries: QuestionSummary[]
+): QuestionSummary[] {
+  return [...summaries]
+    .filter((summary) => summary.hasBlueprint && summary.impact > 0)
+    .sort((a, b) => {
+      if (b.impact !== a.impact) {
+        return b.impact - a.impact;
+      }
+
+      if (b.spread !== a.spread) {
+        return b.spread - a.spread;
+      }
+
+      return a.question.localeCompare(b.question);
+    });
 }
