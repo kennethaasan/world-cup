@@ -795,7 +795,10 @@ function UserDetailsDrawer({
                         color={getStatusColor(question.status)}
                       />
                     </Stack>
-                    <Typography variant="body2" sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ minWidth: 0, '& > span': { whiteSpace: 'normal' } }}
+                    >
                       <Box component="span" sx={{ color: 'text.secondary' }}>
                         Svar:{' '}
                       </Box>
