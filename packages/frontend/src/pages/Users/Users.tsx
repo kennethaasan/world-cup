@@ -783,7 +783,10 @@ function UserDetailsDrawer({
                       spacing={1}
                       sx={{ alignItems: 'center' }}
                     >
-                      <Typography variant="body2" sx={{ flex: 1 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ flex: 1, fontWeight: 800 }}
+                      >
                         {question.question}
                       </Typography>
                       <Chip
@@ -792,15 +795,30 @@ function UserDetailsDrawer({
                         color={getStatusColor(question.status)}
                       />
                     </Stack>
-                    <Typography variant="body2">
-                      Svar: {question.answer || 'Tomt'}
+                    <Typography
+                      variant="body2"
+                      sx={{ minWidth: 0, '& > span': { whiteSpace: 'normal' } }}
+                    >
+                      <Box component="span" sx={{ color: 'text.secondary' }}>
+                        Svar:{' '}
+                      </Box>
+                      <QuestionAnswer
+                        question={question}
+                        showAnswerText
+                        truncateAnswerParts={false}
+                      />
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Fasit: {question.blueprint || 'Ikke avgjort ennå'}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {question.points ?? 0}/{question.max_points ?? 0} poeng
-                    </Typography>
+                    <Chip
+                      label={`${question.points ?? 0}/${
+                        question.max_points ?? 0
+                      } poeng`}
+                      size="small"
+                      color={getStatusColor(question.status)}
+                      sx={{ alignSelf: 'flex-start' }}
+                    />
                   </Stack>
                 </Paper>
               ))}
